@@ -1,0 +1,47 @@
+#!/bin/bash
+
+export PATH=$PATH:/sbin
+
+ipt="iptables"
+ip_rule="fwmark 1 lookup 100"
+ip_route="local default dev lo table 100"
+
+# Remove current rules
+iptables-save -c | grep -v "V2RAY" | iptables-restore -c
+ip rule del $ip_rule 2>/dev/null
+ip route del $ip_route 2>/dev/null
+
+set -euo pipefail
+
+# Create new chain
+$ipt -t nat -N V2RAY
+$ipt -t mangle -N V2RAY
+$ipt -t mangle -N V2RAY_MARK
+
+# Ignore V2Ray outbound traffic
+$ipt -t nat -A V2RAY -m mark --mark 0xff -j RETURN
+$ipt -t mangle -A V2RAY -m mark --mark 0xff -j RETURN
+$ipt -t mangle -A V2RAY_MARK -m mark --mark 0xff -j RETURN
+
+# Ignore LANs and any other addresses you'd like to bypass the proxy
+# See Wikipedia and RFC5735 for full list of reserved networks.
+{% for ip in reversed_ips %}
+$ipt -t nat -A V2RAY -d {{ ip }} -j RETURN
+$ipt -t mangle -A V2RAY -d {{ ip }} -j RETURN
+$ipt -t mangle -A V2RAY_MARK -d {{ ip }} -j RETURN
+{% endfor %}
+
+# Anything else should be redirected to Dokodemo-door's local port
+$ipt -t nat -A V2RAY -p tcp -j REDIRECT --to-ports 12345
+
+# Add any UDP rules
+ip rule add $ip_rule
+ip route add $ip_route
+$ipt -t mangle -A V2RAY      -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
+$ipt -t mangle -A V2RAY_MARK -p udp -j MARK --set-mark 1
+
+# Apply the rules
+$ipt -t nat -A PREROUTING -p tcp -j V2RAY
+$ipt -t nat -A OUTPUT     -p tcp -j V2RAY
+# $ipt -t mangle -A PREROUTING -p udp -j V2RAY
+# $ipt -t mangle -A OUTPUT     -p udp -j V2RAY_MARK

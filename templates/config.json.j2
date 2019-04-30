@@ -1,0 +1,155 @@
+{
+    "inbounds": [
+        {
+            "port": 12345,
+            "tag": "tproxy",
+            "protocol": "dokodemo-door",
+            "settings": {
+                "followRedirect": true,
+                "network": "tcp,udp"
+            },
+            {% if sniffing_enabled %}
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls"
+                ]
+            },
+            {% endif %}
+            "streamSettings": {
+                "sockopt": {
+                    "tproxy": "redirect"
+                }
+            }
+        },
+        {
+            "port": 1080,
+            "tag": "socks",
+            "protocol": "socks",
+            "settings": {
+                "auth": "noauth",
+                "udp": true,
+                "ip": "127.0.0.1"
+            }
+        },
+        {
+            "port": 53,
+            "tag": "dns",
+            "protocol": "dokodemo-door",
+            "settings": {
+                "address": "8.8.8.8",
+                "port": 53,
+                "network": "udp"
+            }
+        }
+    ],
+    "dns": {
+        "servers": [
+            {% if dns_enabled %}
+            "8.8.8.8",
+            {% endif %}
+            {
+                "address": "114.114.114.114",
+                "port": 53,
+                "domains": [
+                    "geosite:cn"
+                ]
+            }
+        ],
+        "tag": "internal-dns"
+    },
+    "outbounds": [
+        {% if forward_mode == 'shadowsocks' %}
+        {
+            "tag": "forward",
+            "protocol": "shadowsocks",
+            "settings": {
+                "servers": [
+                    {
+                        "address": "{{ ss_server }}",
+                        "port": {{ ss_port }},
+                        "method": "{{ ss_method }}",
+                        "password": "{{ ss_password }}"
+                    }
+                ]
+            },
+            "streamSettings": {
+                "sockopt": {
+                    "mark": 255
+                }
+            }
+        },
+        {% elif forward_mode == 'vmess' %}
+        {
+            "tag": "forward",
+            "protocol": "vmess",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "{{ vm_server }}",
+                        "port": {{ vm_port }},
+                        "users": [
+                            {
+                                "id": "{{ vm_user_id }}",
+                                "alterId": {{ vm_user_alter_id }},
+                                "security": "{{ vm_user_security }}"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "sockopt": {
+                    "mark": 255
+                }
+            }
+        },
+        {% endif %}
+        {
+            "tag": "direct",
+            "protocol": "freedom",
+            "streamSettings": {
+                "sockopt": {
+                    "mark": 255
+                }
+            }
+        },
+        {
+            "tag": "dns",
+            "protocol": "dns"
+        }
+    ],
+    "routing": {
+        "domainStrategy": "AsIs",
+        "rules": [
+            {
+                "type": "field",
+                "inboundTag": [
+                    "dns"
+                ],
+                "outboundTag": "dns"
+            },
+            {
+                "type": "field",
+                "outboundTag": "direct",
+                "ip": [
+                    "geoip:private",
+                    "geoip:cn"
+                ]
+            },
+            {
+                "type": "field",
+                "outboundTag": "direct",
+                "domain": [
+                    "geosite:cn"
+                ]
+            },
+            {
+                "type": "field",
+                "outboundTag": "forward",
+                "network": "tcp,udp"
+            }
+        ]
+    }
+}
