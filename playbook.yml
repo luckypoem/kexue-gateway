@@ -31,9 +31,14 @@
       - 255.255.255.255
 
   tasks:
-    - name: Install unzip
-      apt:
-        name: unzip
+    - name: Configure static ip address
+      script: ensure-static-ip.sh
+      register: static_ip
+      changed_when: "'CHANGED' in static_ip.stdout"
+      notify: apply static ip
+
+    - name: Trigger handlers
+      meta: flush_handlers
 
     - name: Enable ipv4 forwarding
       sysctl:
@@ -119,3 +124,7 @@
 
     - name: flush iptables
       shell: flush-iptables.sh
+
+    - name: apply static ip
+      reboot:
+        reboot_timeout: 300

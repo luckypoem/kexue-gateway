@@ -10,19 +10,13 @@
 
 ## 准备工作
 
-### Nano Pi
+### NanoPi
 
-以下步骤均可参考 Armbian 官方 [入门文档](https://docs.armbian.com/User-Guide_Getting-Started/)
+以下步骤可参考 Armbian 官方 [入门文档](https://docs.armbian.com/User-Guide_Getting-Started/)。
 
 1. 给 NanoPi 刷入 Armbian Bionic 系统（理论上本项目兼容 Armbian Stretch，但暂时未测试）。
 2. 将 NanoPi 开机，连接到路由器的 LAN 口上。
-3. 登录到 NanoPi，根据提示进行一些基本配置，随后执行 `apt update` 更新软件源。
-4. 给 NanoPi 配置静态 IP，例如：
-    ```bash
-    sudo nmcli connection modify 'Wired connection 1' connection.autoconnect yes ipv4.method manual ipv4.address 192.168.1.254/24 ipv4.gateway 192.168.1.1 ipv4.dns 114.114.114.114
-    ```
-    以上命令将 NanoPi 的 IP 设置为 *192.168.1.254*，子网掩码为 *255.255.255.0*，网关（路由器）IP 为 *192.168.1.1*，DNS 为 *114.114.114.114*。
-5. 重启 NanoPi，确保静态 IP 已生效且能够正常联网即可。
+3. 登录到 NanoPi，根据提示进行一些基本配置，随后执行 `apt update` 更新软件源即可。
 
 ### 电脑
 
