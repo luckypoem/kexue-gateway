@@ -23,5 +23,9 @@ sniffing_enabled: "{{ not dns_enabled }}"
 
 # healthchecks.io 提供的 UUID。当不为空字符串时，将会启用健康检查上报。
 healthchecks_uuid: ""
-# 健康检查命令。退出代码为 0 时，认为成功；否则认为失败。STDOUT 和 STDERR 的输出将会同时被上报到 healthchecks.io。
-healthchecks_command: 'curl -fsSD - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
+# 健康检查命令组。退出代码为 0 时，认为成功；否则认为失败。STDOUT 和 STDERR 的输出将会同时被上报到 healthchecks.io。
+healthcheck_commands:
+  - set -exu
+  - 'curl --max-time 10 --socks5-hostname 127.0.0.1:{{ socks_forward_port }} -4fsS -D - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
+  - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU Temperature: %0.1f°C\n\", \$1/1000); }"'
+  - 'echo "System uptime: $(uptime)"'

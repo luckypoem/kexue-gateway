@@ -4,21 +4,23 @@
 
 LOG=/var/log/healthcheck.log
 ERROR_LOG=/var/log/healthcheck.error.log
+RESULT=$(mktemp)
 
 date >> "$LOG"
 date >> "$ERROR_LOG"
 
-if RESULT=$(2>&1 {{ healthchecks_command }}); then
+if ({{ healthcheck_commands | join(';') }}) 2>&1 >"$RESULT"; then
     URI=''
 else
     URI='/fail'
 fi
 
-all_proxy=socks5://127.0.0.1:{{ socks_direct_port }} \
-    curl -fsS --retry 3 -X POST -d "$RESULT" \
-        "https://hc-ping.com/{{ healthchecks_uuid }}$URI" \
-        >> "$LOG" \
-        2>> "$ERROR_LOG"
+curl --max-time 10 -fsS --retry 3 -X POST --data-binary "@$RESULT" \
+    "http://hc-ping.com/{{ healthchecks_uuid }}$URI" \
+    >> "$LOG" \
+    2>> "$ERROR_LOG"
+
+rm "$RESULT"
 
 echo >> "$LOG"
 echo >> "$ERROR_LOG"
