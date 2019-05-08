@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -euo pipefail
+
+CHANGED=""
+CONN=$(nmcli --get-values GENERAL.CONNECTION dev show eth0)
+METHOD=$(nmcli --get-values ipv4.method conn show "$CONN")
+
+if [[ $METHOD != "manual" ]]; then
+    CHANGED=YES
+
+    CIDR=$(ip -f inet addr show dev eth0 | grep -Pom1 'inet \K[\d./]+')
+    GATEWAY=$(ip -f inet route show default dev eth0 | grep -Pom1 'via \K[\d.]+')
+    nmcli conn modify "$CONN" \
+        ipv4.method manual \
+        ipv4.addresses "$CIDR" \
+        ipv4.gateway "$GATEWAY"
+fi
+
+ACTUAL_DNS=$(nmcli --get-values ipv4.dns conn show "$CONN")
+EXPECTED_DNS="{{ local_dns_server }}"
+
+if [[ "$ACTUAL_DNS" != "$EXPECTED_DNS" ]]; then
+    CHANGED=YES
+    nmcli conn modify "$CONN" ipv4.dns "$EXPECTED_DNS"
+fi
+
+if [ -n "$CHANGED" ]; then
+    nmcli conn up "$CONN"
+fi

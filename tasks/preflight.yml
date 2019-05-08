@@ -1,8 +1,13 @@
+- name: Generate static ip configure script
+  template:
+    src: ensure-static-ip.sh.j2
+    dest: /usr/local/bin/ensure-static-ip.sh
+    mode: 0755
+
 - name: Configure static ip address
-  script: ensure-static-ip.sh
+  shell: ensure-static-ip.sh
   register: static_ip
-  changed_when: "'CHANGED' in static_ip.stdout"
-  notify: apply static ip
+  changed_when: "'activated' in static_ip.stdout"
 
 - name: Trigger handlers
   meta: flush_handlers
