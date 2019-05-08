@@ -15,6 +15,14 @@
     state: present
     reload: yes
 
+- name: Disable all ipv6
+  sysctl:
+    name: net.ipv6.conf.all.disable_ipv6
+    value: "{{ disable_all_ipv6 }}"
+    sysctl_set: yes
+    state: present
+    reload: yes
+
 - name: Stop systemd-resolved
   systemd:
     name: systemd-resolved

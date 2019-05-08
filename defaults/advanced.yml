@@ -12,6 +12,8 @@ reversed_ips:
   - 240.0.0.0/4
   - 255.255.255.255
 
+# 是否完全禁用 IPv6。
+disable_all_ipv6: true
 # 多路复用数量。可指定单条 TCP 连接实际承载的连接数，若等于 0，则关闭多路复用。
 mux_concurrency: '{{ {"shadowsocks": 0, "vmess": 4}[forward_mode] }}'
 # 是否启用防污染 DNS。当关闭时，不会停止 53 端口的服务，而是将全部 DNS 查询直接转发至 114.114.114.114。
