@@ -1,119 +1,28 @@
 - hosts: all
   remote_user: root
+  vars_files:
+    - defaults/basic.yml
+    - defaults/advanced.yml
+    - defaults/rules.yml
   vars:
     ansible_python_interpreter: python3
-    v2ray_archive: dist/v2ray-linux-arm64.zip
-
-    forward_mode: vmess # 或 shadowsocks
-    dns_enabled: '{{ {"shadowsocks": false, "vmess": true}[forward_mode] }}'
-    sniffing_enabled: "{{ not dns_enabled }}"
-
-    ss_server: "{{ ansible_env.SS_SERVER }}"
-    ss_port: "{{ ansible_env.SS_PORT }}"
-    ss_password: "{{ ansible_env.SS_PASSWORD }}"
-    ss_method: "chacha20-ietf-poly1305"
-
-    vm_server: "{{ ansible_env.VM_SERVER }}"
-    vm_port: "{{ ansible_env.VM_PORT }}"
-    vm_user_id: "{{ ansible_env.VM_USER_ID }}"
-    vm_user_alter_id: 0
-    vm_user_security: "auto"
-
-    reversed_ips:
-      - 0.0.0.0/8
-      - 10.0.0.0/8
-      - 127.0.0.0/8
-      - 169.254.0.0/16
-      - 172.16.0.0/12
-      - 192.168.0.0/16
-      - 224.0.0.0/4
-      - 240.0.0.0/4
-      - 255.255.255.255
 
   tasks:
-    - name: Configure static ip address
-      script: ensure-static-ip.sh
-      register: static_ip
-      changed_when: "'CHANGED' in static_ip.stdout"
-      notify: apply static ip
-
-    - name: Trigger handlers
-      meta: flush_handlers
-
-    - name: Enable ipv4 forwarding
-      sysctl:
-        name: net.ipv4.ip_forward
-        value: "1"
-        sysctl_set: yes
-        state: present
-        reload: yes
+    - import_tasks: tasks/preflight.yml
 
     - name: Check if v2ray installed
       stat:
         path: /usr/bin/v2ray/v2ray
       register: v2ray_installed
 
-    - name: Copy v2ray binary to remote
-      copy:
-        src: "{{ v2ray_archive }}"
-        dest: /tmp/v2ray.zip
+    - include_tasks: tasks/v2ray_install.yml
       when: v2ray_installed.stat.exists == false
 
-    - name: Download v2ray install script
-      get_url:
-        url: https://install.direct/go.sh
-        dest: /usr/local/bin/
-        mode: 0755
-      when: v2ray_installed.stat.exists == false
+    - import_tasks: tasks/v2ray_configure.yml
 
-    - name: Install v2ray
-      shell: go.sh --local /tmp/v2ray.zip
-      when: v2ray_installed.stat.exists == false
-      register: v2ray_install
+    - import_tasks: tasks/iptables.yml
 
-    - name: Print install result
-      debug:
-        var: v2ray_install
-
-    - name: Generate v2ray config file to remote
-      template:
-        src: config.json.j2
-        dest: /etc/v2ray/config.json
-        mode: 0644
-      notify:
-        - restart v2ray
-
-    - name: Stop systemd-resolved
-      systemd:
-        name: systemd-resolved
-        state: stopped
-        enabled: no
-
-    - name: Trigger handlers
-      meta: flush_handlers
-
-    - name: Ensure v2ray service is running
-      shell: service v2ray status
-      changed_when: false
-      args:
-        warn: false
-
-    - name: Generate helper script flush-iptables
-      template:
-        src: flush-iptables.sh.j2
-        dest: /usr/local/bin/flush-iptables.sh
-        mode: 0755
-      notify:
-        - flush iptables
-
-    - name: Trigger handlers
-      meta: flush_handlers
-
-    - name: Add flush-iptables to crontab
-      cron:
-        name: flush iptables
-        special_time: reboot
-        job: /usr/local/bin/flush-iptables.sh
+    - import_tasks: tasks/healthcheck.yml
 
   handlers:
     - name: restart v2ray

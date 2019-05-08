@@ -1,0 +1,16 @@
+- name: Generate v2ray config file to remote
+  template:
+    src: config.json.j2
+    dest: /etc/v2ray/config.json
+    mode: 0644
+  notify:
+    - restart v2ray
+
+- name: Trigger handlers
+  meta: flush_handlers
+
+- name: Ensure v2ray service is running
+  shell: service v2ray status
+  changed_when: false
+  args:
+    warn: false

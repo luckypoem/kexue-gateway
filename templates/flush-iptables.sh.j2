@@ -44,6 +44,9 @@ $ipt -t mangle -A V2RAY_MARK -p udp -j MARK --set-mark 1
 
 # Apply the rules
 $ipt -t nat -A PREROUTING -p tcp -j V2RAY
-$ipt -t nat -A OUTPUT     -p tcp -j V2RAY
 # $ipt -t mangle -A PREROUTING -p udp -j V2RAY
-# $ipt -t mangle -A OUTPUT     -p udp -j V2RAY_MARK
+
+{% if local_traffic %}
+$ipt -t nat -A OUTPUT -p tcp -j V2RAY
+# $ipt -t mangle -A OUTPUT -p udp -j V2RAY_MARK
+{% endif %}

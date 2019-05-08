@@ -1,5 +1,30 @@
 {{ ansible_managed | comment('cblock') }}
+{% set stream_settings %}
+    "streamSettings": {
+        "sockopt": {
+            "mark": 255
+        }
+    }
+{% endset %}
+{% set mux_settings %}
+    "mux": {
+        "enabled": {% if mux_concurrency | int > 0 %}true{% else %}false{% endif %},
+        "concurrency": {{ mux_concurrency }}
+    }
+{% endset %}
+{% set socks_settings %}
+    "protocol": "socks",
+    "settings": {
+        "auth": "noauth",
+        "udp": false
+    }
+{% endset %}
 {
+    "log": {
+        "access": "/dev/null",
+        "error": "/var/log/v2ray.log",
+        "loglevel": "warning"
+    },
     "inbounds": [
         {
             "port": 12345,
@@ -25,14 +50,19 @@
             }
         },
         {
-            "port": 1080,
+            "port": {{ socks_port }},
             "tag": "socks",
-            "protocol": "socks",
-            "settings": {
-                "auth": "noauth",
-                "udp": true,
-                "ip": "127.0.0.1"
-            }
+            {{ socks_settings }}
+        },
+        {
+            "port": {{ socks_direct_port }},
+            "tag": "socks-direct",
+            {{ socks_settings }}
+        },
+        {
+            "port": {{ socks_forward_port }},
+            "tag": "socks-forward",
+            {{ socks_settings }}
         },
         {
             "port": 53,
@@ -42,6 +72,14 @@
                 "address": "8.8.8.8",
                 "port": 53,
                 "network": "udp"
+            }
+        },
+        {
+            "port": 8080,
+            "tag": "api",
+            "protocol": "dokodemo-door",
+            "settings": {
+                "address": "127.0.0.1"
             }
         }
     ],
@@ -65,6 +103,8 @@
         {
             "tag": "forward",
             "protocol": "shadowsocks",
+            {{ mux_settings }},
+            {{ stream_settings }},
             "settings": {
                 "servers": [
                     {
@@ -74,17 +114,14 @@
                         "password": "{{ ss_password }}"
                     }
                 ]
-            },
-            "streamSettings": {
-                "sockopt": {
-                    "mark": 255
-                }
             }
         },
         {% elif forward_mode == 'vmess' %}
         {
             "tag": "forward",
             "protocol": "vmess",
+            {{ mux_settings }},
+            {{ stream_settings }},
             "settings": {
                 "vnext": [
                     {
@@ -99,22 +136,13 @@
                         ]
                     }
                 ]
-            },
-            "streamSettings": {
-                "sockopt": {
-                    "mark": 255
-                }
             }
         },
         {% endif %}
         {
             "tag": "direct",
             "protocol": "freedom",
-            "streamSettings": {
-                "sockopt": {
-                    "mark": 255
-                }
-            }
+            {{ stream_settings }}
         },
         {
             "tag": "dns",
@@ -127,18 +155,45 @@
             {
                 "type": "field",
                 "inboundTag": [
+                    "api"
+                ],
+                "outboundTag": "api"
+            },
+            {
+                "type": "field",
+                "inboundTag": [
                     "dns"
                 ],
                 "outboundTag": "dns"
             },
             {
                 "type": "field",
-                "outboundTag": "direct",
-                "ip": [
-                    "geoip:private",
-                    "geoip:cn"
-                ]
+                "inboundTag": [
+                    "socks-direct"
+                ],
+                "outboundTag": "direct"
             },
+            {
+                "type": "field",
+                "inboundTag": [
+                    "socks-forward"
+                ],
+                "outboundTag": "forward"
+            },
+            {% if direct_sources is not none %}
+            {
+                "type": "field",
+                "source": {{ direct_sources | tojson }},
+                "outboundTag": "direct"
+            },
+            {% endif %}
+            {% if forward_sources is not none %}
+            {
+                "type": "field",
+                "source": {{ forward_sources | tojson }},
+                "outboundTag": "forward"
+            },
+            {% endif %}
             {
                 "type": "field",
                 "outboundTag": "direct",
@@ -148,9 +203,36 @@
             },
             {
                 "type": "field",
-                "outboundTag": "forward",
-                "network": "tcp,udp"
+                "outboundTag": "direct",
+                "ip": [
+                    "geoip:cn"
+                ]
             }
         ]
-    }
+    },
+    "api": {
+        "tag": "api",
+        "services": [
+            "HandlerService",
+            "LoggerService",
+            "StatsService"
+        ]
+    },
+    "policy": {
+        "levels": {
+            "0": {
+                "handshake": 2,
+                "connIdle": 300,
+                "uplinkOnly": 2,
+                "downlinkOnly": 5,
+                "statsUserUplink": true,
+                "statsUserDownlink": true
+            }
+        },
+        "system": {
+            "statsInboundUplink": true,
+            "statsInboundDownlink": true
+        }
+    },
+    "stats": {}
 }

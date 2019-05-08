@@ -1,0 +1,16 @@
+- name: Generate helper script flush-iptables
+  template:
+    src: flush-iptables.sh.j2
+    dest: &flush_iptables_script /usr/local/bin/flush-iptables.sh
+    mode: 0755
+  notify:
+    - flush iptables
+
+- name: Trigger handlers
+  meta: flush_handlers
+
+- name: Add flush-iptables to crontab
+  cron:
+    name: flush iptables
+    special_time: reboot
+    job: *flush_iptables_script

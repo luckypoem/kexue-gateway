@@ -1,0 +1,12 @@
+#/bin/bash
+
+{{ ansible_managed | comment }}
+
+if RESULT=$(2>&1 {{ healthchecks_command }}); then
+    URI=''
+else
+    URI='/fail'
+fi
+
+all_proxy=socks5://127.0.0.1:{{ socks_direct_port }} \
+    curl -fsS --retry 3 -X POST -d "$RESULT" "https://hc-ping.com/{{ healthchecks_uuid }}$URI" >> /var/log/healthcheck.log

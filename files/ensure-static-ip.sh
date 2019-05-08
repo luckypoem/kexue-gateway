@@ -10,14 +10,14 @@ if [[ $METHOD == "manual" ]]; then
     exit 0
 fi
 
-CIDR=$(ip -f inet addr show dev eth0 | grep -Po 'inet \K[\d./]+')
-GATEWAY=$(ip -f inet route show default dev eth0 | grep -Po 'via \K[\d.]+')
+CIDR=$(ip -f inet addr show dev eth0 | grep -Pom1 'inet \K[\d./]+')
+GATEWAY=$(ip -f inet route show default dev eth0 | grep -Pom1 'via \K[\d.]+')
 DNS="114.114.114.114"
 
 sudo nmcli connection modify "$CONN" \
     connection.autoconnect yes \
     ipv4.method manual \
-    ipv4.address "$CIDR" \
+    ipv4.addresses "$CIDR" \
     ipv4.gateway "$GATEWAY" \
     ipv4.dns "$DNS"
 

@@ -1,0 +1,12 @@
+- name: Generate healthcheck script
+  template:
+    src: healthcheck.sh.j2
+    dest: &healthcheck_script /usr/local/sbin/healthcheck.sh
+    mode: 0755
+
+- name: Add healthcheck to crontab
+  cron:
+    name: healthcheck
+    job: *healthcheck_script
+    minute: "*"
+    disabled: "{{ healthchecks_uuid == '' }}"
