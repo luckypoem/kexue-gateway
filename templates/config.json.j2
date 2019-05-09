@@ -75,7 +75,8 @@
             }
         },
         {
-            "port": 8080,
+            "listen": "{{ api_listen }}",
+            "port": "{{ api_port }}",
             "tag": "api",
             "protocol": "dokodemo-door",
             "settings": {
@@ -84,6 +85,10 @@
         }
     ],
     "dns": {
+        "tag": "internal-dns",
+        {% if dns_hosts %}
+        "hosts": {{ dns_hosts | tojson }},
+        {% endif %}
         "servers": [
             {% if dns_enabled %}
             "8.8.8.8",
@@ -95,8 +100,7 @@
                     "geosite:cn"
                 ]
             }
-        ],
-        "tag": "internal-dns"
+        ]
     },
     "outbounds": [
         {% if forward_mode == 'shadowsocks' %}
@@ -152,6 +156,13 @@
     "routing": {
         "domainStrategy": "AsIs",
         "rules": [
+            {
+                "type": "field",
+                "inboundTag": [
+                    "benchmark"
+                ],
+                "outboundTag": "forward"
+            },
             {
                 "type": "field",
                 "inboundTag": [
@@ -223,10 +234,10 @@
             "0": {
                 "handshake": 2,
                 "connIdle": 300,
-                "uplinkOnly": 2,
-                "downlinkOnly": 5,
-                "statsUserUplink": true,
-                "statsUserDownlink": true
+                "uplinkOnly": 0,
+                "downlinkOnly": 0,
+                "statsUserUplink": false,
+                "statsUserDownlink": false
             }
         },
         "system": {

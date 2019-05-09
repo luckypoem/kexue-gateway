@@ -1,5 +1,11 @@
-# V2ray 发行包路径。可在 https://github.com/v2ray/v2ray-core/releases 下载。
-v2ray_archive: dist/v2ray-linux-arm64.zip
+# ------------------------------
+# 以下为网络配置，将影响内核或系统配置
+# ------------------------------
+
+# 是否完全禁用 IPv6。
+disable_all_ipv6: true
+# 网关自身 DNS 服务器。
+local_dns_server: 114.114.114.114
 # 保留 IP 地址（段）。目标 IP 属于这些 IP 段的流量将不会进入 V2ray，而是直接由 iptables RETURN。
 reversed_ips:
   - 0.0.0.0/8
@@ -12,10 +18,15 @@ reversed_ips:
   - 240.0.0.0/4
   - 255.255.255.255
 
-# 是否完全禁用 IPv6。
-disable_all_ipv6: true
+# ---------------------------------------
+# 以下为 V2ray 配置，详情可参考 V2ray 官方文档
+# ---------------------------------------
+
+# V2ray 发行包路径。可在 https://github.com/v2ray/v2ray-core/releases 下载。
+v2ray_archive: dist/v2ray-linux-arm64.zip
+
 # 多路复用数量。可指定单条 TCP 连接实际承载的连接数，若等于 0，则关闭多路复用。
-mux_concurrency: '{{ {"shadowsocks": 0, "vmess": 4}[forward_mode] }}'
+mux_concurrency: 0
 # 是否启用防污染 DNS。当关闭时，不会停止 53 端口的服务，而是将全部 DNS 查询直接转发至 114.114.114.114。
 dns_enabled: '{{ {"shadowsocks": false, "vmess": true}[forward_mode] }}'
 # 是否开启嗅探。当启用时，将监测 HTTP 和 TLS（HTTPS）流量的目标域名，可在无法指定客户端 DNS 时使用，可避免部分 DNS 污染。
@@ -28,11 +39,25 @@ log_error: /var/log/v2ray/error.log
 # 日志等级。可选值请参考 V2ray 文档。
 log_level: warning
 
+# API 监听地址。
+api_listen: 127.0.0.1
+# API 监听端口。
+api_port: 8080
+
+# DNS 服务静态映射配置。该列表项的名和值分别对应域名与 IP 地址。
+dns_hosts:
+  # 例如，将 kexue-gateway.lan 解析为网关自身 IP 地址。
+  kexue-gateway.lan: "{{ ansible_default_ipv4.address }}"
+
+# --------------------------------------
+# 以下为健康检查配置，依赖于 healthchecks.io
+# --------------------------------------
+
 # healthchecks.io 提供的 UUID。当不为空字符串时，将会启用健康检查上报。
 healthchecks_uuid: ""
 # 健康检查命令组。退出代码为 0 时，认为成功；否则认为失败。STDOUT 和 STDERR 的输出将会同时被上报到 healthchecks.io。
 healthcheck_commands:
   - set -exu
-  - 'curl --max-time 10 --socks5-hostname 127.0.0.1:{{ socks_forward_port }} -4fsS -D - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
-  - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU Temperature: %0.1f°C\n\", \$1/1000); }"'
+  - 'curl -4fsS -x socks5h://127.0.0.1:{{ socks_forward_port }} -m 10 -D - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
+  - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
   - 'echo "System uptime: $(uptime)"'
