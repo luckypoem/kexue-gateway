@@ -21,6 +21,13 @@ dns_enabled: '{{ {"shadowsocks": false, "vmess": true}[forward_mode] }}'
 # 是否开启嗅探。当启用时，将监测 HTTP 和 TLS（HTTPS）流量的目标域名，可在无法指定客户端 DNS 时使用，可避免部分 DNS 污染。
 sniffing_enabled: "{{ not dns_enabled }}"
 
+# 访问日志路径。
+log_access: /dev/null
+# 错误日志路径。
+log_error: /var/log/v2ray/error.log
+# 日志等级。可选值请参考 V2ray 文档。
+log_level: warning
+
 # healthchecks.io 提供的 UUID。当不为空字符串时，将会启用健康检查上报。
 healthchecks_uuid: ""
 # 健康检查命令组。退出代码为 0 时，认为成功；否则认为失败。STDOUT 和 STDERR 的输出将会同时被上报到 healthchecks.io。

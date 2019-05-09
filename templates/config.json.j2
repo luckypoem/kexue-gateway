@@ -21,9 +21,9 @@
 {% endset %}
 {
     "log": {
-        "access": "/dev/null",
-        "error": "/var/log/v2ray.log",
-        "loglevel": "warning"
+        "access": "{{ log_access }}",
+        "error": "{{ log_error }}",
+        "loglevel": "{{ log_level }}"
     },
     "inbounds": [
         {
