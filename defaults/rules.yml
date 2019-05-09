@@ -4,8 +4,8 @@
 
 # 是否转发本地流量。启用后，网关自身的流量将与其它客户端流量享有同样的转发规则，俗称自动分流。
 local_traffic: false
-# 本地 DNS 服务器。推荐 114.114.114.114。
-local_dns_server: "{% if local_traffic %}127.0.0.1{% else %}114.114.114.114{% endif %}"
+# 本地 DNS 服务器。
+local_dns_server: 114.114.114.114
 
 # Socks 代理端口。该端口提供的代理服务与其它流量享有同样的转发规则。
 socks_port: 1080
