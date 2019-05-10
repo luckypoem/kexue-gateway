@@ -9,4 +9,4 @@
     name: healthcheck
     job: /usr/local/sbin/healthcheck.sh 2>>/var/log/healthcheck.log
     minute: "*"
-    disabled: "{{ healthchecks_uuid == '' }}"
+    disabled: "{{ not healthchecks_uuid == '' }}"

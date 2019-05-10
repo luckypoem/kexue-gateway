@@ -13,20 +13,20 @@
   sysctl:
     name: net.ipv4.ip_forward
     value: "1"
-    sysctl_set: yes
+    sysctl_set: true
     state: present
-    reload: yes
+    reload: true
 
 - name: Disable all ipv6
   sysctl:
     name: net.ipv6.conf.all.disable_ipv6
     value: "{{ disable_all_ipv6 }}"
-    sysctl_set: yes
+    sysctl_set: true
     state: present
-    reload: yes
+    reload: true
 
 - name: Stop systemd-resolved
   systemd:
     name: systemd-resolved
     state: stopped
-    enabled: no
+    enabled: false

@@ -16,7 +16,7 @@
       register: v2ray_installed
 
     - include_tasks: tasks/v2ray_install.yml
-      when: v2ray_installed.stat.exists == false
+      when: not v2ray_installed.stat.exists
 
     - import_tasks: tasks/v2ray_configure.yml
 

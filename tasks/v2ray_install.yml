@@ -12,6 +12,7 @@
 - name: Install v2ray
   shell: go.sh --local /tmp/v2ray.zip
   register: v2ray_install
+  changed_when: true
 
 - name: Print install result
   debug:
