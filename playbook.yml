@@ -24,6 +24,8 @@
 
     - import_tasks: tasks/healthcheck.yml
 
+    - import_tasks: tasks/statistics.yml
+
   handlers:
     - name: restart v2ray
       systemd:
@@ -34,3 +36,5 @@
     - name: flush iptables
       shell: flush-iptables.sh
 
+    - name: collect stats
+      shell: collect-stats.sh

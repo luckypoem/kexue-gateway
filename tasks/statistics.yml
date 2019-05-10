@@ -1,0 +1,37 @@
+- name: Generate stats collecting script
+  template:
+    src: collect-stats.sh.j2
+    dest: /usr/local/sbin/collect-stats.sh
+    mode: 0755
+
+- name: Gather if filter rules already exists
+  shell: "/sbin/iptables -C OUTPUT -m mark --mark {{ item }}"
+  failed_when: false
+  changed_when: false
+  loop:
+    - "{{ so_mark_direct }}"
+    - "{{ so_mark_forward }}"
+  register: stats_iptables_rules
+
+- name: Restore iptables rules at reboot
+  cron:
+    name: "stats {{ item.item }}"
+    job: "/sbin/iptables -A OUTPUT -m mark --mark {{ item.item }}"
+    special_time: reboot
+  when: "item.rc != 0"
+  loop: "{{ stats_iptables_rules.results }}"
+  register: stats_iptables_rules
+
+- name: Add filter rules into iptables
+  shell: "{{ item.invocation.module_args.job }}"
+  when: "item.item.rc != 0"
+  loop: "{{ stats_iptables_rules.results }}"
+
+- name: Add collecting stats to crontab
+  cron:
+    name: collect-stats
+    job: /usr/local/sbin/collect-stats.sh 2>>/var/log/collect-stats.log
+    hour: "{{ stats_collect_at }}"
+    disabled: "{{ stats_collect_at == -1 }}"
+  notify:
+    - collect stats

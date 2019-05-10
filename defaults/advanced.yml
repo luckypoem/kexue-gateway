@@ -67,3 +67,14 @@ healthcheck_commands:
   - 'curl -4fsS -x socks5h://127.0.0.1:{{ socks_forward_port }} -m 10 -D - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
   - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
   - 'echo "System uptime: $(uptime)"'
+
+# ------------
+# 以下为统计配置
+# ------------
+
+# 每日几时收集统计数据。例如，设置为 8，则每天八点执行统计；设置为 -1 表示禁用统计。
+stats_collect_at: -1
+# 用于存储统计数据的目录。可不必存在，将尝试自动创建。
+stats_storage: /var/log/stats
+# 统计数据收集成功后执行的脚本。支持多行，可用于上报至 Slack 等；包含当日统计数据的文件路径可通过 $STATS 变量访问。
+stats_after_script:
