@@ -67,16 +67,17 @@ pip install ansible
 以下路径均相对于本项目根目录。
 
 1. 克隆本项目。
-2. 将 `defaults/basic.yml` 复制到 `vars/basic.yml`，根据服务器信息替换其中的配置。
+2. 将 `defaults/basic.yml` 复制到 `vars/main.yml`，根据服务器信息替换其中的配置。
 3. 执行命令，并根据提示输入指定信息：
    ```bash
-   ./apply.sh vars/basic.yml
+   ./apply.sh vars/main.yml
    ```
 4. 登录路由器管理页面，修改 LAN 口的 DHCP 服务配置 —— 将客户端网关和 DNS 服务器均设置为 NanoPi 的 IP 地址即可。
 
 ## 进阶配置
 
-- 你可以参考 `defaults/` 目录内其它配置文件的注释，调整更多配置项。
+- 建议先阅读 GitHub [Wiki](https://github.com/wi1dcard/kexue-gateway/wiki)。
+- 可参考 `defaults/` 目录内其它配置文件的注释，调整更多配置项。
 - 也可以通过修改 `templates/config.json.j2` 来自定义由 Jinja2 渲染的 V2ray 配置文件。
 - 另外，使用 `sudo armbian-config` -> *Network* -> *IP* 可手动配置静态 IP 地址。
 
