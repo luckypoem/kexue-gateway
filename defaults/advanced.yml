@@ -6,6 +6,9 @@
 disable_all_ipv6: true
 # 网关自身 DNS 服务器。
 local_dns_server: 114.114.114.114
+# SO_MARK 设置。用于 iptables 甄别流量来源，一般无需修改。
+so_mark_direct: 255
+so_mark_forward: 254
 # 保留 IP 地址（段）。目标 IP 属于这些 IP 段的流量将不会进入 V2ray，而是直接由 iptables RETURN。
 reversed_ips:
   - 0.0.0.0/8

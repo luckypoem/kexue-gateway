@@ -21,9 +21,14 @@ $ipt -t mangle -N V2RAY
 $ipt -t mangle -N V2RAY_MARK
 
 # Ignore V2Ray outbound traffic
-$ipt -t nat -A V2RAY -m mark --mark 0xff -j RETURN
-$ipt -t mangle -A V2RAY -m mark --mark 0xff -j RETURN
-$ipt -t mangle -A V2RAY_MARK -m mark --mark 0xff -j RETURN
+$ipt -t nat -A V2RAY -m mark --mark {{ so_mark_direct }} -j RETURN
+$ipt -t nat -A V2RAY -m mark --mark {{ so_mark_forward }} -j RETURN
+
+$ipt -t mangle -A V2RAY -m mark --mark {{ so_mark_direct }} -j RETURN
+$ipt -t mangle -A V2RAY -m mark --mark {{ so_mark_forward }} -j RETURN
+
+$ipt -t mangle -A V2RAY_MARK -m mark --mark {{ so_mark_direct }} -j RETURN
+$ipt -t mangle -A V2RAY_MARK -m mark --mark {{ so_mark_forward }} -j RETURN
 
 # Ignore LANs and any other addresses you'd like to bypass the proxy
 # See Wikipedia and RFC5735 for full list of reserved networks.
@@ -40,7 +45,7 @@ $ipt -t nat -A V2RAY -p tcp -j REDIRECT --to-ports 12345
 ip rule add $ip_rule
 ip route add $ip_route
 $ipt -t mangle -A V2RAY      -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
-$ipt -t mangle -A V2RAY_MARK -p udp -j MARK --set-mark 1
+$ipt -t mangle -A V2RAY_MARK -p udp -j MARK --set-mark 0x01
 
 # Apply the rules
 $ipt -t nat -A PREROUTING -p tcp -j V2RAY

@@ -2,7 +2,7 @@
 {% set stream_settings %}
     "streamSettings": {
         "sockopt": {
-            "mark": 255
+            "mark": {{ so_mark_forward }}
         }
     }
 {% endset %}
@@ -147,7 +147,11 @@
         {
             "tag": "direct",
             "protocol": "freedom",
-            {{ stream_settings }}
+            "streamSettings": {
+                "sockopt": {
+                    "mark": {{ so_mark_direct }}
+                }
+            }
         },
         {
             "tag": "dns",
