@@ -38,7 +38,7 @@ sniffing_enabled: "{{ not dns_enabled }}"
 # 访问日志路径。
 log_access: /dev/null
 # 错误日志路径。
-log_error: /var/log/v2ray/error.log
+log_error: /var/log/v2ray.log
 # 日志等级。可选值请参考 V2ray 文档。
 log_level: warning
 
