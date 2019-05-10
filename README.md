@@ -1,5 +1,8 @@
 # 科学网关
 
+[![Build Status](https://travis-ci.com/wi1dcard/kexue-gateway.svg?token=FFy2KXZmvw6M3U6ihiAo&branch=master)](https://travis-ci.com/wi1dcard/kexue-gateway)
+[![WTFPL](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-2.png)](http://www.wtfpl.net/)
+
 所谓 `kexue-gateway`，就是指能够科学上网的网关啦。根据测试，在默认配置下，至少能够达到 200Mbps 左右的稳定速率。
 
 - [科学网关](#%E7%A7%91%E5%AD%A6%E7%BD%91%E5%85%B3)
