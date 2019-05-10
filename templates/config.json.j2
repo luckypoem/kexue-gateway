@@ -19,6 +19,7 @@
         "udp": false
     }
 {% endset %}
+{% set main %}
 {
     "log": {
         "access": "{{ log_access }}",
@@ -87,7 +88,7 @@
     "dns": {
         "tag": "internal-dns",
         {% if dns_hosts %}
-        "hosts": {{ dns_hosts | tojson }},
+        "hosts": {{ dns_hosts | to_json }},
         {% endif %}
         "servers": [
             {% if dns_enabled %}
@@ -194,14 +195,14 @@
             {% if direct_sources is not none %}
             {
                 "type": "field",
-                "source": {{ direct_sources | tojson }},
+                "source": {{ direct_sources | to_json }},
                 "outboundTag": "direct"
             },
             {% endif %}
             {% if forward_sources is not none %}
             {
                 "type": "field",
-                "source": {{ forward_sources | tojson }},
+                "source": {{ forward_sources | to_json }},
                 "outboundTag": "forward"
             },
             {% endif %}
@@ -247,3 +248,5 @@
     },
     "stats": {}
 }
+{% endset %}
+{{ main | from_json | to_json(indent=2) }}
