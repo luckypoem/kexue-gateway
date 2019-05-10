@@ -34,6 +34,3 @@
     - name: flush iptables
       shell: flush-iptables.sh
 
-    - name: apply static ip
-      reboot:
-        reboot_timeout: 300
