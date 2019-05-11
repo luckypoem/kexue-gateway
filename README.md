@@ -59,17 +59,17 @@
 
 ### 电脑
 
-在电脑上 [安装 Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)，例如通过 Python 的 pip 包管理器安装：
-
-```bash
-pip install ansible
-```
+1. 安装 Git LFS，用于拉取 `dist/` 目录。
+2. [安装 Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)，例如通过 Python 的 pip 包管理器安装：
+    ```bash
+    pip install ansible
+    ```
 
 ## 开始使用
 
 以下路径均相对于本项目根目录。
 
-1. 克隆本项目。
+1. 完整克隆或下载本项目。
 2. 将 `defaults/basic.yml` 复制到 `vars/main.yml`，根据服务器信息替换其中的配置。
 3. 执行命令，并根据提示输入指定信息：
    ```bash
