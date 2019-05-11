@@ -18,5 +18,5 @@ ss_server: ""
 ss_port: 0
 # Shadowsocks 密码
 ss_password: ""
-# Shadowsocks 加密方式。对于 NanoPi NEO 2，推荐使用 chacha-ietf-poly1305。
+# Shadowsocks 加密方式。对于 NanoPi NEO 2，推荐使用 chacha20-ietf-poly1305。
 ss_method: ""
