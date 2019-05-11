@@ -6,6 +6,10 @@
 disable_all_ipv6: true
 # 网关自身 DNS 服务器。
 local_dns_server: 114.114.114.114
+# 是否开启 DNS 劫持。开启后，DNS 查询请求（目标端口为 53 的 UDP 流量）将会被强制重定向至网关的 DNS 服务。
+# 可在客户端无法修改 DNS 服务器时使用（例如 Chromecast）。
+# 若客户端 DNS 服务器处于同一子网，通常该选项无效，流量会直达同一子网内的目标而不经过网关。
+dns_hijacking: false
 # SO_MARK 设置。用于 iptables 甄别流量来源，一般无需修改。
 so_mark_direct: 255
 so_mark_forward: 254

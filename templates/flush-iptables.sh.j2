@@ -48,6 +48,10 @@ $ipt -t mangle -A V2RAY      -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01
 $ipt -t mangle -A V2RAY_MARK -p udp -j MARK --set-mark 0x01
 
 # Apply the rules
+{% if dns_hijacking %}
+$ipt -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+{% endif %}
+
 $ipt -t nat -A PREROUTING -p tcp -j V2RAY
 # $ipt -t mangle -A PREROUTING -p udp -j V2RAY
 
