@@ -1,22 +1,23 @@
 # 转发模式。可选 vmess 或 shadowsocks，推荐使用 vmess。
 forward_mode: vmess
 
-# VMess 服务器地址
+# VMess 服务器地址。
 vm_server: ""
-# VMess 服务端口号
+# VMess 服务端口号。
 vm_port: ""
-# VMess 用户 ID
+# VMess 用户 ID。
 vm_user_id: ""
-# VMess 额外 ID 数量
+# VMess 额外 ID 数量。
 vm_user_alter_id: 0
-# VMess 加密方式。对于 NanoPi NEO 2，推荐使用 aes-128-gcm。
+# VMess 加密方式。对于 NanoPi NEO 2，推荐使用 aes-128-gcm（或 auto）。
 vm_user_security: "auto"
 
-# Shadowsocks 服务器地址
+# Shadowsocks 服务器地址。
 ss_server: ""
-# Shadowsocks 服务端口号
+# Shadowsocks 服务端口号。
 ss_port: 0
-# Shadowsocks 密码
+# Shadowsocks 密码。
 ss_password: ""
-# Shadowsocks 加密方式。对于 NanoPi NEO 2，推荐使用 chacha20-ietf-poly1305。
+# Shadowsocks 加密方式。兼容性列表参见：https://www.v2ray.com/chapter_02/protocols/shadowsocks.html#encryption-list。
+# 对于 NanoPi NEO 2，推荐使用 chacha20-ietf-poly1305。
 ss_method: ""
