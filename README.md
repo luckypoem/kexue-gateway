@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/wi1dcard/kexue-gateway.svg?token=FFy2KXZmvw6M3U6ihiAo&branch=master)](https://travis-ci.com/wi1dcard/kexue-gateway)
 [![WTFPL](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-2.png)](http://www.wtfpl.net/)
 
-所谓 `kexue-gateway`，就是指能够科学上网的网关啦。根据测试，在默认配置下，至少能够达到 200Mbps 左右的稳定速率。
+基于 V2ray 强大的配置，NanoPi 小巧的体积，以及 Ansible 灵活的任务编排，本项目通过相对简单的步骤，尽可能地带来接近原生的互联网体验。根据测试，在默认配置下，至少能够达到 200Mbps 左右的稳定速率。
 
 - [科学网关](#%E7%A7%91%E5%AD%A6%E7%BD%91%E5%85%B3)
   - [目录结构](#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84)
