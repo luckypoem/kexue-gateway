@@ -52,9 +52,12 @@ api_listen: 127.0.0.1
 api_port: 8080
 
 # DNS 服务静态映射配置。该列表项的名和值分别对应域名与 IP 地址。
+# 支持子域名或正则匹配等，详见：https://www.v2ray.com/chapter_02/04_dns.html#dnsobject。
 dns_hosts:
   # 例如，将 kexue-gateway.lan 解析为网关自身 IP 地址。
   kexue-gateway.lan: "{{ ansible_default_ipv4.address }}"
+  # 例如，将常见广告域名解析到 127.0.0.1，以达到屏蔽部分广告的作用。
+  # geosite:category-ads: 127.0.0.1
 
 # --------------------------------------
 # 以下为健康检查配置，依赖于 healthchecks.io
