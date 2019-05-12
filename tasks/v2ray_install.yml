@@ -1,19 +1,32 @@
-- name: Copy v2ray binary to remote
-  copy:
-    src: "{{ v2ray_archive }}"
-    dest: /tmp/v2ray.zip
-
-- name: Download v2ray install script
-  get_url:
-    url: https://install.direct/go.sh
-    dest: /usr/local/bin/
+- name: Ensure installation directory exists
+  file:
+    path: "{{ v2ray_install_path }}"
+    state: directory
     mode: 0755
 
-- name: Install v2ray
-  shell: go.sh --local /tmp/v2ray.zip
-  register: v2ray_install
-  changed_when: true
+- name: Extract v2ray archive
+  unarchive:
+    src: "{{ v2ray_archive }}"
+    dest: "{{ v2ray_install_path }}"
 
-- name: Print install result
-  debug:
-    var: v2ray_install
+- name: Validate v2* executable files
+  shell: "{{ v2ray_install_path }}/v2ctl {{ v2ray_install_path }}/{{ item }}"
+  changed_when: false
+  loop:
+    - v2ray
+    - v2ctl
+
+- name: Create symlinks to v2* executable files
+  file:
+    src: "{{ v2ray_install_path }}/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+  loop:
+    - v2ray
+    - v2ctl
+
+- name: Generate systemd service file
+  template:
+    src: v2ray.service.j2
+    dest: /etc/systemd/system/v2ray.service
+    mode: 0644

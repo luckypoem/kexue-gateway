@@ -9,27 +9,17 @@
 
   tasks:
     - import_tasks: tasks/preflight.yml
-
-    - name: Check if v2ray installed
-      stat:
-        path: /usr/bin/v2ray/v2ray
-      register: v2ray_installed
-
-    - include_tasks: tasks/v2ray_install.yml
-      when: not v2ray_installed.stat.exists
-
+    - import_tasks: tasks/v2ray_install.yml
     - import_tasks: tasks/v2ray_configure.yml
-
     - import_tasks: tasks/iptables.yml
-
     - import_tasks: tasks/healthcheck.yml
-
     - import_tasks: tasks/statistics.yml
 
   handlers:
     - name: restart v2ray
       systemd:
         enabled: true
+        daemon_reload: true
         name: v2ray
         state: restarted
 

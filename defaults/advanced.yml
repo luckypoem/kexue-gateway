@@ -31,6 +31,8 @@ reversed_ips:
 
 # V2ray 发行包路径。可在 https://github.com/v2ray/v2ray-core/releases 下载。
 v2ray_archive: dist/v2ray-linux-arm64.zip
+# V2ray 安装路径。
+v2ray_install_path: /usr/local/v2ray
 
 # 多路复用数量。可指定单条 TCP 连接实际承载的连接数，若等于 0，则关闭多路复用。
 mux_concurrency: 0

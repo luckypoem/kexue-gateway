@@ -1,3 +1,5 @@
+{{ ansible_managed | comment }}
+
 [Unit]
 Description=V2Ray Service
 After=network.target
@@ -11,7 +13,7 @@ Wants=network.target
 # Group=v2ray
 Type=simple
 PIDFile=/run/v2ray.pid
-ExecStart=/usr/bin/v2ray/v2ray -config /etc/v2ray/config.json
+ExecStart=/usr/local/bin/v2ray -config /etc/v2ray/config.json
 Restart=on-failure
 # Don't restart in the case of configuration error
 RestartPreventExitStatus=23

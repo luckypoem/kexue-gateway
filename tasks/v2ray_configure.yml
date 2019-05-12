@@ -7,8 +7,8 @@
   notify:
     - restart v2ray
 
-- name: Validate configuration
-  shell: "/usr/bin/v2ray/v2ray -test -config {{ generate_v2ray_config.path }}"
+- name: Validate v2ray configuration
+  shell: "v2ray -test -config {{ generate_v2ray_config.path }}"
   changed_when: false
 
 - name: Copy config file after validation passed
