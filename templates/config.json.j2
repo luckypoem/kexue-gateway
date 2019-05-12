@@ -1,24 +1,28 @@
 {{ ansible_managed | comment('cblock') }}
+
 {% set stream_settings %}
-    "streamSettings": {
-        "sockopt": {
-            "mark": {{ so_mark_forward }}
-        }
+"streamSettings": {
+    "sockopt": {
+        "mark": {{ so_mark_forward }}
     }
+}
 {% endset %}
+
 {% set mux_settings %}
-    "mux": {
-        "enabled": {% if mux_concurrency | int > 0 %}true{% else %}false{% endif %},
-        "concurrency": {{ mux_concurrency }}
-    }
+"mux": {
+    "enabled": {% if mux_concurrency | int > 0 %}true{% else %}false{% endif %},
+    "concurrency": {{ mux_concurrency }}
+}
 {% endset %}
+
 {% set socks_settings %}
-    "protocol": "socks",
-    "settings": {
-        "auth": "noauth",
-        "udp": false
-    }
+"protocol": "socks",
+"settings": {
+    "auth": "noauth",
+    "udp": false
+}
 {% endset %}
+
 {% set main %}
 {
     "log": {
@@ -161,6 +165,7 @@
     "routing": {
         "domainStrategy": "AsIs",
         "rules": [
+            {# special usage routes #}
             {
                 "type": "field",
                 "inboundTag": [
@@ -175,6 +180,7 @@
                 ],
                 "outboundTag": "dns"
             },
+            {# socks inbound routes #}
             {
                 "type": "field",
                 "inboundTag": [
@@ -189,6 +195,7 @@
                 ],
                 "outboundTag": "forward"
             },
+            {# sources routes #}
             {% if direct_sources is not none %}
             {
                 "type": "field",
@@ -203,6 +210,7 @@
                 "outboundTag": "forward"
             },
             {% endif %}
+            {# cn routes #}
             {
                 "type": "field",
                 "outboundTag": "direct",
