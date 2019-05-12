@@ -4,10 +4,30 @@
     state: directory
     mode: 0755
 
+- name: Gather v2ray's current version
+  shell: &v2ray_version_command "v2ray -version"
+  register: v2ray_current_version
+  changed_when: false
+
 - name: Extract v2ray archive
   unarchive:
     src: "{{ v2ray_archive }}"
     dest: "{{ v2ray_install_path }}"
+
+- name: Ensure execute permission
+  file:
+    path: "{{ v2ray_install_path }}/{{ item }}"
+    mode: 0755
+  loop:
+    - v2ray
+    - v2ctl
+
+- name: Check if v2ray upgraded
+  shell: *v2ray_version_command
+  register: v2ray_updated_version
+  changed_when: "v2ray_updated_version.stdout != v2ray_current_version.stdout"
+  notify:
+    - restart v2ray
 
 - name: Validate v2* executable files
   shell: "{{ v2ray_install_path }}/v2ctl {{ v2ray_install_path }}/{{ item }}"
