@@ -89,6 +89,7 @@
 - [配置 Samba 服务](https://tutorials.ubuntu.com/tutorial/install-and-configure-samba)
 - [运行 Docker](https://docs.armbian.com/User-Guide_Advanced-Features/#how-to-run-docker)
 - [监控 CPU 温度](https://docs.armbian.com/Hardware_Allwinner-H5-A64/)
+- [基于 AdGuard Home 屏蔽广告](https://github.com/AdguardTeam/AdGuardHome/wiki/Raspberry-Pi)
 - [一键安装常用软件](https://docs.armbian.com/User-Guide_Armbian-Config/#software)，例如我认为比较实用的有：
   - Transmission（BT 客户端）
   - Syncthing（私有云）
