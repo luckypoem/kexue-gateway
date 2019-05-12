@@ -8,13 +8,13 @@
     - restart v2ray
 
 - name: Validate v2ray configuration
-  shell: "v2ray -test -config {{ generate_v2ray_config.path }}"
+  shell: "v2ray -test -config {{ generate_v2ray_config.dest }}"
   changed_when: false
 
 - name: Copy config file after validation passed
   copy:
     remote_src: true
-    src: "{{ generate_v2ray_config.path }}"
+    src: "{{ generate_v2ray_config.dest }}"
     dest: /etc/v2ray/config.json
 
 - name: Trigger handlers
