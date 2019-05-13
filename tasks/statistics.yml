@@ -32,6 +32,7 @@
     name: collect-stats
     job: /usr/local/sbin/collect-stats.sh 2>>/var/log/collect-stats.log
     hour: "{{ stats_collect_at }}"
+    minute: "0"
     disabled: "{{ stats_collect_at == -1 }}"
   notify:
     - collect stats
