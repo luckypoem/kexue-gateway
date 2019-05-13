@@ -4,18 +4,24 @@
     dest: /tmp/v2ray-config.json
     mode: 0644
   register: generate_v2ray_config
-  notify:
-    - restart v2ray
 
 - name: Validate v2ray configuration
   shell: "v2ray -test -config {{ generate_v2ray_config.dest }}"
   changed_when: false
+
+- name: Ensure config dir exists
+  file:
+    path: /etc/v2ray
+    state: directory
+    mode: 0755
 
 - name: Copy config file after validation passed
   copy:
     remote_src: true
     src: "{{ generate_v2ray_config.dest }}"
     dest: /etc/v2ray/config.json
+  notify:
+    - restart v2ray
 
 - name: Trigger handlers
   meta: flush_handlers
