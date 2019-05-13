@@ -1,3 +1,7 @@
+- name: Set timezone to Asia/Shanghai
+  timezone:
+    name: Asia/Shanghai
+
 - name: Generate static ip configure script
   template:
     src: ensure-static-ip.sh.j2
