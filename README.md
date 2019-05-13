@@ -51,7 +51,7 @@
 
 以下步骤可参考 Armbian 官方 [入门文档](https://docs.armbian.com/User-Guide_Getting-Started/)。
 
-1. 下载 [Armbian Bionic](https://www.armbian.com/nanopi-neo-2/) 系统镜像；理论上本项目兼容 Armbian Stretch，但暂时未测试。
+1. 下载 [Armbian Bionic](https://www.armbian.com/nanopi-neo-2/) 系统镜像。
 2. 将镜像刷入 TF 卡；推荐使用 [balenaEtcher](https://www.balena.io/etcher/) 工具，简单易用。
 3. 将 TF 卡插入 NanoPi 并连接到路由器的 LAN 口，随后上电开机。
 4. 通过路由器管理页面查看 NanoPi 的 IP 地址（亦可尝试 `nanopineo2`）；使用 SSH 登录到 NanoPi，用户名为 `root`，密码为 `1234`。
@@ -103,9 +103,10 @@
 
 ## 已知事项
 
-- 不支持 IPv6。
-- 不支持 UDP Relay。
+- 不支持 IPv6；原因：普及率低。
+- 不支持 UDP Relay；原因：配置不当易引发副作用，例如延迟升高等。
 - V2ray 内置 DNS 将会强制将 TTL 设置为 600s。
+- 本项目目前亦可用于 Armbian Stretch；但由于个人精力有限，无法保证长期兼容性。
 
 ## 感谢
 
