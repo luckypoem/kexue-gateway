@@ -11,6 +11,7 @@
 - name: Configure static ip address
   shell: ensure-static-ip.sh
   register: static_ip
+  changed_when: false
 
 - name: Enable ipv4 forwarding
   sysctl:
