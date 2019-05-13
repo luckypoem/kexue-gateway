@@ -4,29 +4,20 @@
 
 set -euo pipefail
 
-CHANGED=""
-CONN=$(nmcli --get-values GENERAL.CONNECTION dev show eth0)
-METHOD=$(nmcli --get-values ipv4.method conn show "$CONN")
+# Compatible with nmcli old version like v1.6.2 which is used in Armbian Stretch.
+# For the latest version, a option named "--get-values" is available.
+nmc="nmcli -t -m tabular"
 
-if [[ $METHOD != "manual" ]]; then
-    CHANGED=YES
+# Setup IP addresses, DNS servers and the gateway.
+CONN=$($nmc -f GENERAL.CONNECTION dev show eth0)
+CIDR=$(ip -f inet addr show dev eth0 | grep -Pom1 'inet \K[\d./]+')
+GATEWAY={{ local_gateway_ip if local_gateway_ip else "$(ip -f inet route show default dev eth0 | grep -Pom1 'via \K[\d.]+')" }}
 
-    CIDR=$(ip -f inet addr show dev eth0 | grep -Pom1 'inet \K[\d./]+')
-    GATEWAY=$(ip -f inet route show default dev eth0 | grep -Pom1 'via \K[\d.]+')
-    nmcli conn modify "$CONN" \
-        ipv4.method manual \
-        ipv4.addresses "$CIDR" \
-        ipv4.gateway "$GATEWAY"
-fi
+$nmc conn modify "$CONN" \
+    ipv4.method manual \
+    ipv4.addresses "$CIDR" \
+    ipv4.gateway "$GATEWAY" \
+    ipv4.dns "{{ local_dns_server }}"
 
-ACTUAL_DNS=$(nmcli --get-values ipv4.dns conn show "$CONN")
-EXPECTED_DNS="{{ local_dns_server }}"
-
-if [[ "$ACTUAL_DNS" != "$EXPECTED_DNS" ]]; then
-    CHANGED=YES
-    nmcli conn modify "$CONN" ipv4.dns "$EXPECTED_DNS"
-fi
-
-if [ -n "$CHANGED" ]; then
-    nmcli conn up "$CONN"
-fi
+# Bring up the connection.
+nmcli conn up "$CONN"
