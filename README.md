@@ -59,7 +59,7 @@
 
 ### 电脑
 
-1. 安装 Git LFS，用于拉取 `dist/` 目录。
+1. 安装 Git LFS（用于拉取 `dist/` 目录）。
 2. [安装 Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)，例如通过 Python 的 pip 包管理器安装：
     ```bash
     pip install ansible
@@ -67,15 +67,19 @@
 
 ## 开始使用
 
-以下路径均相对于本项目根目录。
+以下路径均相对于本项目根目录，请在本地执行命令。
 
 1. 完整克隆或下载本项目。
 2. 将 `defaults/basic.yml` 复制到 `vars/main.yml`，根据服务器信息替换其中的配置。
-3. 执行命令，并根据提示输入指定信息：
+3. 运行以下命令，并根据提示输入指定信息：
    ```bash
    ./apply.sh vars/main.yml
    ```
-4. 登录路由器管理页面，修改 LAN 口的 DHCP 服务配置 —— 将客户端网关和 DNS 服务器均设置为 NanoPi 的 IP 地址即可。
+4. （可选）使用以下命令确认代理已经正常运行：
+    ```bash
+    curl -x socks5://<NANO_PI_IP>:1082 ipinfo.io
+    ```
+5. 登录路由器管理页面，修改 LAN 口的 DHCP 服务配置 —— 将客户端网关和 DNS 服务器均设置为 NanoPi 的 IP 地址即可。
 
 ## 进阶配置
 
