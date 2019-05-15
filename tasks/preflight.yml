@@ -1,17 +1,25 @@
+- name: Print local network status
+  debug:
+    var: ansible_default_ipv4
+
 - name: Set timezone to Asia/Shanghai
   timezone:
     name: Asia/Shanghai
 
-- name: Generate static ip configure script
-  template:
-    src: ensure-static-ip.sh.j2
-    dest: /usr/local/bin/ensure-static-ip.sh
-    mode: 0755
+- name: Obtain the connection name by nmcli
+  shell: nmcli -t -m tabular -f GENERAL.CONNECTION dev show eth0
+  register: nmcli_connection_name
 
 - name: Configure static ip address
-  shell: ensure-static-ip.sh
-  register: static_ip
-  changed_when: false
+  shell: |
+    nmcli conn modify "{{ nmcli_connection_name.stdout }}" \
+      ipv4.method manual \
+      ipv4.addresses "{{ ansible_default_ipv4.address ~ "/" ~ prefix }}" \
+      ipv4.gateway "{{ local_gateway_ip if local_gateway_ip else ansible_default_ipv4.gateway }}" \
+      ipv4.dns "{{ local_dns_server }}" && \
+    nmcli conn up "{{ nmcli_connection_name.stdout }}"
+  vars:
+    prefix: "{{ (ansible_default_ipv4.network ~ '/' ~ ansible_default_ipv4.netmask) | ipaddr('prefix') }}"
 
 - name: Enable ipv4 forwarding
   sysctl:
