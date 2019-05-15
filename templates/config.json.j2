@@ -1,20 +1,5 @@
 {{ ansible_managed | comment('cblock') }}
 
-{% set stream_settings %}
-"streamSettings": {
-    "sockopt": {
-        "mark": {{ so_mark_forward }}
-    }
-}
-{% endset %}
-
-{% set mux_settings %}
-"mux": {
-    "enabled": {% if mux_concurrency | int > 0 %}true{% else %}false{% endif %},
-    "concurrency": {{ mux_concurrency }}
-}
-{% endset %}
-
 {% set socks_settings %}
 "protocol": "socks",
 "settings": {
@@ -108,46 +93,11 @@
         ]
     },
     "outbounds": [
-        {% if forward_mode == 'shadowsocks' %}
-        {
-            "tag": "forward",
-            "protocol": "shadowsocks",
-            {{ mux_settings }},
-            {{ stream_settings }},
-            "settings": {
-                "servers": [
-                    {
-                        "address": "{{ ss_server }}",
-                        "port": {{ ss_port }},
-                        "method": "{{ ss_method }}",
-                        "password": "{{ ss_password }}"
-                    }
-                ]
-            }
-        },
-        {% elif forward_mode == 'vmess' %}
-        {
-            "tag": "forward",
-            "protocol": "vmess",
-            {{ mux_settings }},
-            {{ stream_settings }},
-            "settings": {
-                "vnext": [
-                    {
-                        "address": "{{ vm_server }}",
-                        "port": {{ vm_port }},
-                        "users": [
-                            {
-                                "id": "{{ vm_user_id }}",
-                                "alterId": {{ vm_user_alter_id }},
-                                "security": "{{ vm_user_security }}"
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        {% endif %}
+        {% if forward_mode == '*' %}
+            {{ v2ray_processed_outbounds.values() | list | map('to_json') | join(',') }}
+        {% else %}
+            {{ v2ray_processed_outbounds[forward_mode] | to_json }}
+        {% endif %},
         {
             "tag": "direct",
             "protocol": "freedom",
@@ -164,36 +114,32 @@
     ],
     "routing": {
         "domainStrategy": "AsIs",
+        "balancers": [{
+            "tag": "forwards",
+            "selector": ["forward"]
+        }],
         "rules": [
             {# special usage routes #}
             {
                 "type": "field",
-                "inboundTag": [
-                    "api"
-                ],
+                "inboundTag": ["api"],
                 "outboundTag": "api"
             },
             {
                 "type": "field",
-                "inboundTag": [
-                    "dns"
-                ],
+                "inboundTag": ["dns"],
                 "outboundTag": "dns"
             },
             {# socks inbound routes #}
             {
                 "type": "field",
-                "inboundTag": [
-                    "socks-direct"
-                ],
+                "inboundTag": ["socks-direct"],
                 "outboundTag": "direct"
             },
             {
                 "type": "field",
-                "inboundTag": [
-                    "socks-forward"
-                ],
-                "outboundTag": "forward"
+                "inboundTag": ["socks-forward"],
+                "balancerTag": "forwards"
             },
             {# sources routes #}
             {% if direct_sources is not none %}
@@ -207,23 +153,24 @@
             {
                 "type": "field",
                 "source": {{ forward_sources | to_json }},
-                "outboundTag": "forward"
+                "balancerTag": "forwards"
             },
             {% endif %}
             {# cn routes #}
             {
                 "type": "field",
                 "outboundTag": "direct",
-                "domain": [
-                    "geosite:cn"
-                ]
+                "domain": ["geosite:cn"]
             },
             {
                 "type": "field",
                 "outboundTag": "direct",
-                "ip": [
-                    "geoip:cn"
-                ]
+                "ip": ["geoip:cn"]
+            },
+            {
+                "type": "field",
+                "balancerTag": "forwards",
+                "network": "tcp,udp"
             }
         ]
     },

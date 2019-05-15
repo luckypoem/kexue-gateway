@@ -1,0 +1,28 @@
+v2ray_outbound_defaults:
+  mux:
+    enabled: "{{ (mux_concurrency | int) > 0 }}"
+    concurrency: "{{ mux_concurrency }}"
+  streamSettings:
+    sockopt:
+      mark: "{{ so_mark_forward }}"
+
+v2ray_outbounds:
+  vmess:
+    protocol: vmess
+    settings:
+      vnext:
+        - address: "{{ vm_server }}"
+          port: "{{ vm_port }}"
+          users:
+            - id: "{{ vm_user_id }}"
+              alter_id: "{{ vm_user_alter_id }}"
+              security: "{{ vm_user_security }}"
+
+  shadowsocks:
+    protocol: shadowsocks
+    settings:
+      servers:
+        - address: "{{ ss_server }}"
+          port: "{{ ss_port }}"
+          method: "{{ ss_method }}"
+          password: "{{ ss_password }}"
