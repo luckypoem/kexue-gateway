@@ -89,3 +89,10 @@ stats_collect_at: -1
 stats_storage: /var/log/stats
 # 统计数据收集成功后执行的脚本。支持多行，可用于上报至 Slack 等；包含当日统计数据的文件路径可通过 $STATS 变量访问。
 stats_after_script:
+
+# -----------------
+# 以下为 DNSMASQ 配置
+# -----------------
+
+dnsmasq_enabled: false
+dhcp_range: 192.168.0.50,192.168.0.150,255.255.255.0,1h

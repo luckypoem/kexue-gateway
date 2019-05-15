@@ -15,6 +15,8 @@
     - import_tasks: tasks/iptables.yml
     - import_tasks: tasks/healthcheck.yml
     - import_tasks: tasks/statistics.yml
+    - include_tasks: tasks/dnsmasq.yml
+      when: dnsmasq_enabled
 
   handlers:
     - name: restart v2ray
@@ -22,6 +24,11 @@
         enabled: true
         daemon_reload: true
         name: v2ray
+        state: restarted
+
+    - name: restart dnsmasq
+      systemd:
+        name: dnsmasq
         state: restarted
 
     - name: flush iptables
