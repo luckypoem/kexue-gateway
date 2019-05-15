@@ -75,7 +75,7 @@ healthchecks_uuid: ""
 # STDOUT 的输出将会被上报到 healthchecks.io。
 # STDERR 的输出将会被记录到 /var/log/healthcheck.log。
 healthcheck_commands:
-  - 'curl -4fsS -x socks5h://127.0.0.1:{{ socks_forward_port }} -m 10 -D - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
+  - 'curl -4fsS -m 3 --retry 3 -x socks5h://127.0.0.1:{{ socks_forward_port }} -D - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
   - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
   - 'echo "System uptime: $(uptime)"'
 
