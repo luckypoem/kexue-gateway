@@ -60,9 +60,9 @@
 ### 电脑
 
 1. 安装 Git LFS（用于拉取 `dist/` 目录）。
-2. [安装 Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)，例如通过 Python 的 pip 包管理器安装：
+2. [安装 Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) 和 `python-netaddr`，例如通过 Python 的 pip 包管理器安装：
     ```bash
-    pip install ansible
+    pip install ansible netaddr
     ```
 
 ## 开始使用
