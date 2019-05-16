@@ -5,6 +5,8 @@
 - name: Set timezone to Asia/Shanghai
   timezone:
     name: Asia/Shanghai
+  notify:
+    - restart cron
 
 - name: Obtain the connection name by nmcli
   shell: nmcli -t -m tabular -f GENERAL.CONNECTION dev show eth0
