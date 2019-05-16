@@ -1,0 +1,33 @@
+# --------------------------------------
+# 以下为健康检查配置，依赖于 healthchecks.io
+# --------------------------------------
+
+# healthchecks.io 提供的 UUID。当不为空字符串时，将会启用健康检查上报。
+healthchecks_uuid: ""
+# 健康检查命令组。可配置多条命令，将会按顺序执行。当其中任意命令的退出代码非零时，后续命令不再继续执行。
+# 若退出代码均为零，则认为健康（OK）；否则认为故障（Failure）。
+# STDOUT 的输出将会被上报到 healthchecks.io；STDERR 的输出将会被记录到 /var/log/healthcheck.log。
+healthcheck_commands:
+  - 'curl -4fsS -m 3 --retry 3 -x socks5h://127.0.0.1:{{ socks_forward_port }} -D - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
+  - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
+  - 'echo "System uptime: $(uptime)"'
+
+# ------------
+# 以下为统计配置
+# ------------
+
+# 每日几时收集统计数据。例如，设置为 8，则每天八点执行统计；设置为 -1 表示禁用统计。
+stats_collect_at: -1
+# 用于存储统计数据的目录。可不必存在，将尝试自动创建。
+stats_storage: /var/log/stats
+# 统计数据收集成功后执行的脚本。支持多行，可用于上报至 Slack 等；包含当日统计数据的文件路径可通过 $STATS 变量访问。
+stats_after_script:
+
+# -----------------
+# 以下为 DNSMASQ 配置
+# -----------------
+
+# 是否安装 DNSMASQ。
+dnsmasq_enabled: false
+# DHCP 服务 IP 范围。可用于部分无法修改 DHCP 选项的路由器固件，详情参见 Wiki。
+dhcp_range: 192.168.0.50,192.168.0.150,255.255.255.0,1h
