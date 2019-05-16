@@ -18,6 +18,8 @@
     - import_tasks: tasks/statistics.yml
     - include_tasks: tasks/dnsmasq.yml
       when: dnsmasq_enabled
+    - include_tasks: tasks/frpc.yml
+      when: frpc_version != ''
 
   handlers:
     - name: restart v2ray
@@ -25,6 +27,13 @@
         enabled: true
         daemon_reload: true
         name: v2ray
+        state: restarted
+
+    - name: restart frpc
+      systemd:
+        daemon_reload: true
+        enabled: true
+        name: frpc
         state: restarted
 
     - name: restart dnsmasq

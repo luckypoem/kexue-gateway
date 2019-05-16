@@ -1,5 +1,5 @@
 # --------------------------------------
-# 以下为健康检查配置，依赖于 healthchecks.io
+#   健康检查配置，依赖于 healthchecks.io
 # --------------------------------------
 
 # healthchecks.io 提供的 UUID。当不为空字符串时，将会启用健康检查上报。
@@ -13,7 +13,7 @@ healthcheck_commands:
   - 'echo "System uptime: $(uptime)"'
 
 # ------------
-# 以下为统计配置
+#   统计配置
 # ------------
 
 # 每日几时收集统计数据。例如，设置为 8，则每天八点执行统计；设置为 -1 表示禁用统计。
@@ -24,10 +24,19 @@ stats_storage: /var/log/stats
 stats_after_script:
 
 # -----------------
-# 以下为 DNSMASQ 配置
+#   DNSMASQ 配置
 # -----------------
 
 # 是否安装 DNSMASQ。
 dnsmasq_enabled: false
 # DHCP 服务 IP 范围。可用于部分无法修改 DHCP 选项的路由器固件，详情参见 Wiki。
 dhcp_range: 192.168.0.50,192.168.0.150,255.255.255.0,1h
+
+# --------------
+#   frpc 配置
+# --------------
+
+# frpc 安装版本。例如 "0.27.0"，若为空则不安装 frpc。
+frpc_version:
+# frpc 配置文件路径。其内容支持 Jinja2 模板语法。
+frpc_config_file: vars/frpc.ini.j2
