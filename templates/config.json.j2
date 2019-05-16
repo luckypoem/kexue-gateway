@@ -114,12 +114,8 @@
     ],
     "routing": {
         "domainStrategy": "AsIs",
-        "balancers": [{
-            "tag": "forwards",
-            "selector": ["forward"]
-        }],
+        "balancers": {{ v2ray_balancers | to_json }},
         "rules": [
-            {# special usage routes #}
             {
                 "type": "field",
                 "inboundTag": ["api"],
@@ -130,48 +126,7 @@
                 "inboundTag": ["dns"],
                 "outboundTag": "dns"
             },
-            {# socks inbound routes #}
-            {
-                "type": "field",
-                "inboundTag": ["socks-direct"],
-                "outboundTag": "direct"
-            },
-            {
-                "type": "field",
-                "inboundTag": ["socks-forward"],
-                "balancerTag": "forwards"
-            },
-            {# sources routes #}
-            {% if direct_sources is not none %}
-            {
-                "type": "field",
-                "source": {{ direct_sources | to_json }},
-                "outboundTag": "direct"
-            },
-            {% endif %}
-            {% if forward_sources is not none %}
-            {
-                "type": "field",
-                "source": {{ forward_sources | to_json }},
-                "balancerTag": "forwards"
-            },
-            {% endif %}
-            {# cn routes #}
-            {
-                "type": "field",
-                "outboundTag": "direct",
-                "domain": ["geosite:cn"]
-            },
-            {
-                "type": "field",
-                "outboundTag": "direct",
-                "ip": ["geoip:cn"]
-            },
-            {
-                "type": "field",
-                "balancerTag": "forwards",
-                "network": "tcp,udp"
-            }
+            {{ v2ray_routes | map('to_json') | join(',') }}
         ]
     },
     "api": {

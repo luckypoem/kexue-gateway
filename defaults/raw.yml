@@ -1,3 +1,5 @@
+v2ray_outbound_tag: forward
+v2ray_balancer_tag: forwards
 v2ray_outbound_defaults:
   mux:
     enabled: "{{ (mux_concurrency | int) > 0 }}"
@@ -26,3 +28,37 @@ v2ray_outbounds:
           port: "{{ ss_port }}"
           method: "{{ ss_method }}"
           password: "{{ ss_password }}"
+
+v2ray_balancers:
+  - tag: "{{ v2ray_balancer_tag }}"
+    selector:
+      - "{{ v2ray_outbound_tag }}"
+
+v2ray_routes:
+  - type: field
+    inboundTag: [socks-direct]
+    outboundTag: direct
+
+  - type: field
+    inboundTag: [socks-forward]
+    balancerTag: "{{ v2ray_balancer_tag }}"
+
+  - type: field
+    source: "{{ direct_sources if direct_sources is not none else ['0.0.0.0'] }}"
+    outboundTag: direct
+
+  - type: field
+    inboundTag: "{{ forward_sources if forward_sources is not none else ['0.0.0.0'] }}"
+    balancerTag: "{{ v2ray_balancer_tag }}"
+
+  - type: field
+    outboundTag: direct
+    domain: ["geosite:cn"]
+
+  - type: field
+    outboundTag: direct
+    ip: ["geoip:cn"]
+
+  - type: field
+    balancerTag: "{{ v2ray_balancer_tag }}"
+    network: tcp,udp
