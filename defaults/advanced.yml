@@ -94,5 +94,7 @@ stats_after_script:
 # 以下为 DNSMASQ 配置
 # -----------------
 
+# 是否安装 DNSMASQ。
 dnsmasq_enabled: false
+# DHCP 服务 IP 范围。可用于部分无法修改 DHCP 选项的路由器固件，详情参见 Wiki。
 dhcp_range: 192.168.0.50,192.168.0.150,255.255.255.0,1h
