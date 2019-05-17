@@ -8,9 +8,9 @@ healthchecks_uuid: ""
 # 若退出代码均为零，则认为健康（OK）；否则认为故障（Failure）。
 # STDOUT 的输出将会被上报到 healthchecks.io；STDERR 的输出将会被记录到 /var/log/healthcheck.log。
 healthcheck_commands:
-  - 'curl -4fsS -m 3 --retry 3 -x socks5h://127.0.0.1:{{ socks_forward_port }} -D - -w "Remote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.gstatic.com/generate_204'
-  - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
   - 'echo "System uptime: $(uptime)"'
+  - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
+  - 'curl -4fsS -m 5 --retry 3 -w "\nRemote IP: %{remote_ip}\nResponse time: %{time_total}s\n" ipinfo.io'
 
 # ------------
 #   统计配置
