@@ -113,7 +113,7 @@
         {% endif %}
     ],
     "routing": {
-        "domainStrategy": "AsIs",
+        "domainStrategy": "{{ domain_strategy }}",
         "balancers": {{ v2ray_balancers | to_json }},
         "rules": [
             {

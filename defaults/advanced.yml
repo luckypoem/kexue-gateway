@@ -42,6 +42,8 @@ mux_concurrency: 0
 dns_enabled: "{{ forward_mode == 'vmess' }}"
 # 是否开启嗅探。当启用时，将监测 HTTP 和 TLS（HTTPS）流量的目标域名，可在无法指定客户端 DNS 时使用，可避免部分 DNS 污染。
 sniffing_enabled: "{{ not dns_enabled }}"
+# 域名路由策略。若为 IPOnDemand，会将域名通过内置的 DNS 解析为 IP 后，参与包含 IP 条件的路由规则匹配。
+domain_strategy: "{{ 'AsIs' if dns_enabled else 'IPOnDemand' }}"
 
 # 访问日志路径。
 log_access: /dev/null
