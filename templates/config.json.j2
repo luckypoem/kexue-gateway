@@ -93,11 +93,6 @@
         ]
     },
     "outbounds": [
-        {% if forward_mode == '*' %}
-            {{ v2ray_processed_outbounds.values() | list | map('to_json') | join(',') }}
-        {% else %}
-            {{ v2ray_processed_outbounds[forward_mode] | to_json }}
-        {% endif %},
         {
             "tag": "direct",
             "protocol": "freedom",
@@ -110,7 +105,12 @@
         {
             "tag": "dns",
             "protocol": "dns"
-        }
+        },
+        {% if forward_mode == '*' %}
+            {{ v2ray_processed_outbounds.values() | list | map('to_json') | join(',') }}
+        {% else %}
+            {{ v2ray_processed_outbounds[forward_mode] | to_json }}
+        {% endif %}
     ],
     "routing": {
         "domainStrategy": "AsIs",
