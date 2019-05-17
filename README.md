@@ -77,7 +77,7 @@
    ```
 4. （可选）使用以下命令确认代理已经正常运行：
     ```bash
-    curl -x socks5://<NANO_PI_IP>:1082 ipinfo.io
+    curl -x socks5h://<NANO_PI_IP>:1082 ipinfo.io
     ```
 5. 登录路由器管理页面，修改 LAN 口的 DHCP 服务配置 —— 将客户端网关和 DNS 服务器均设置为 NanoPi 的 IP 地址即可。
 
