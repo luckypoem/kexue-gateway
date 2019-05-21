@@ -60,5 +60,9 @@ v2ray_routes:
     ip: ["geoip:cn"]
 
   - type: field
+    outboundTag: direct
+    protocol: bittorrent
+
+  - type: field
     balancerTag: "{{ v2ray_balancer_tag }}"
     network: tcp,udp
