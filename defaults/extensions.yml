@@ -21,7 +21,7 @@ stats_collect_at: -1
 # 用于存储统计数据的目录。可不必存在，将尝试自动创建。
 stats_storage: /var/log/stats
 # 统计数据收集成功后执行的脚本。支持多行，可用于上报至 Slack 等；包含当日统计数据的文件路径可通过 $STATS 变量访问。
-stats_after_script:
+stats_after_script: ""
 
 # -----------------
 #   DNSMASQ 配置
@@ -37,6 +37,6 @@ dhcp_range: 192.168.0.50,192.168.0.150,255.255.255.0,1h
 # --------------
 
 # frpc 安装版本。例如 "0.27.0"，若为空则不安装 frpc。
-frpc_version:
+frpc_version: ""
 # frpc 配置文件路径。其内容支持 Jinja2 模板语法。
 frpc_config_file: vars/frpc.ini.j2

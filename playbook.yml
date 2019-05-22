@@ -19,7 +19,7 @@
     - import_tasks: tasks/dnsmasq.yml
       when: dnsmasq_enabled
     - import_tasks: tasks/frpc.yml
-      when: frpc_version
+      when: frpc_version | bool
 
   handlers:
     - name: restart v2ray
