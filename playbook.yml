@@ -14,10 +14,9 @@
     - import_tasks: tasks/v2ray_install.yml
     - import_tasks: tasks/v2ray_configure.yml
     - import_tasks: tasks/iptables.yml
+    - import_tasks: tasks/dnsmasq.yml
     - import_tasks: tasks/healthcheck.yml
     - import_tasks: tasks/statistics.yml
-    - import_tasks: tasks/dnsmasq.yml
-      when: dnsmasq_enabled
     - import_tasks: tasks/frpc.yml
       when: frpc_version | bool
 
@@ -34,11 +33,6 @@
         daemon_reload: true
         enabled: true
         name: frpc
-        state: restarted
-
-    - name: restart dnsmasq
-      systemd:
-        name: dnsmasq
         state: restarted
 
     - name: restart cron

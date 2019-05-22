@@ -55,11 +55,11 @@
             {{ socks_settings }}
         },
         {
-            "port": 53,
+            "port": 5353,
             "tag": "dns",
             "protocol": "dokodemo-door",
             "settings": {
-                "address": "8.8.8.8",
+                "address": "{{ "8.8.8.8" if dns_enabled else "114.114.114.114" }}",
                 "port": 53,
                 "network": "udp"
             }
@@ -75,21 +75,8 @@
         }
     ],
     "dns": {
-        "tag": "internal-dns",
-        {% if dns_hosts %}
-        "hosts": {{ dns_hosts | to_json }},
-        {% endif %}
         "servers": [
-            {% if dns_enabled %}
-            "8.8.8.8",
-            {% endif %}
-            {
-                "address": "114.114.114.114",
-                "port": 53,
-                "domains": [
-                    "geosite:cn"
-                ]
-            }
+            "localhost"
         ]
     },
     "outbounds": [
@@ -101,10 +88,6 @@
                     "mark": {{ so_mark_direct }}
                 }
             }
-        },
-        {
-            "tag": "dns",
-            "protocol": "dns"
         },
         {% if forward_mode == '*' %}
             {{ v2ray_processed_outbounds.values() | list | map('to_json') | join(',') }}
@@ -120,11 +103,6 @@
                 "type": "field",
                 "inboundTag": ["api"],
                 "outboundTag": "api"
-            },
-            {
-                "type": "field",
-                "inboundTag": ["dns"],
-                "outboundTag": "dns"
             },
             {{ v2ray_routes | map('to_json') | join(',') }}
         ]
@@ -156,4 +134,5 @@
     "stats": {}
 }
 {% endset %}
+
 {{ main | from_json | to_json(indent=2) }}
