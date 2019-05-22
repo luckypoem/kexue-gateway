@@ -12,17 +12,6 @@ healthcheck_commands:
   - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
   - 'curl -4fsS -m 5 --retry 3 -w "\nRemote IP: %{remote_ip}\nResponse time: %{time_total}s\n" ipinfo.io'
 
-# ------------
-#   统计配置
-# ------------
-
-# 每日几时收集统计数据。例如，设置为 8，则每天八点执行统计；设置为 -1 表示禁用统计。
-stats_collect_at: -1
-# 用于存储统计数据的目录。可不必存在，将尝试自动创建。
-stats_storage: /var/log/stats
-# 统计数据收集成功后执行的脚本。支持多行，可用于上报至 Slack 等；包含当日统计数据的文件路径可通过 $STATS 变量访问。
-stats_after_script: ""
-
 # --------------
 #   frpc 配置
 # --------------
