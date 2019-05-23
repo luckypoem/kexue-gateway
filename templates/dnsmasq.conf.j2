@@ -106,6 +106,9 @@ server=127.0.0.1#5353
 # interface (eg eth0) here.
 # Repeat the line for more than one interface.
 #interface=
+{% for interface in (dnsmasq_interfaces if dnsmasq_interfaces) %}
+interface={{ interface }}
+{% endfor %}
 # Or you can specify which interface _not_ to listen on
 #except-interface=
 # Or which to listen on by address (remember to include 127.0.0.1 if
@@ -337,9 +340,9 @@ dhcp-range={{ dhcp_range }}
 
 # Do the same thing, but using the option name
 #dhcp-option=option:router,1.2.3.4
-{% if dhcp_enabled %}
-dhcp-option=option:dns-server,{{ ansible_default_ipv4.address }}
-{% endif %}
+{% for option in (dhcp_options if dhcp_options) %}
+dhcp-option=option:{{ option }}
+{% endfor %}
 
 # Override the default route supplied by dnsmasq and send no default
 # route at all. Note that this only works for the options sent by

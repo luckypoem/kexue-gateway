@@ -33,10 +33,16 @@ reversed_ips:
 # 以下为 DNSMASQ 配置，将影响 DHCP 服务和 DNS 服务
 # -------------------------------------------
 
+# DNSMASQ 监听端口。默认为全部。
+dnsmasq_interfaces: []
+
 # 是否启用 DHCP 服务。可用于部分无法修改 DHCP 选项的路由器固件，详情参见 Wiki。
 dhcp_enabled: false
 # DHCP 服务 IP 范围。
 dhcp_range: 192.168.0.50,192.168.0.150,255.255.255.0,1h
+# DHCP 选项。
+dhcp_options:
+  - "dns-server,{{ ansible_default_ipv4.address }}"
 
 # ---------------------------------------
 # 以下为 V2ray 配置，详情可参考 V2ray 官方文档

@@ -9,6 +9,17 @@
     dest: /etc/dnsmasq.conf
     mode: 0644
 
+- name: Gather dnsmasq-china-list last update time
+  stat:
+    path: /etc/dnsmasq.d/bogus-nxdomain.china.conf
+  register: dnsmasq_china_list
+
+- name: Install dnsmasq-china-list
+  script: files/dnsmasq-china-list.sh
+  when: >-
+    (not dnsmasq_china_list.stat.exists) or
+    (ansible_date_time.epoch | int - dnsmasq_china_list.stat.ctime > 3600 * 24 * 7)
+
 - name: Restart dnsmasq service
   systemd:
     name: dnsmasq
