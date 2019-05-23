@@ -22,8 +22,8 @@
   handlers:
     - name: restart v2ray
       systemd:
-        enabled: true
         daemon_reload: true
+        enabled: true
         name: v2ray
         state: restarted
 

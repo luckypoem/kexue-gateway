@@ -13,3 +13,4 @@
   systemd:
     name: dnsmasq
     state: restarted
+    enabled: true
