@@ -11,6 +11,7 @@
 - name: Obtain the connection name by nmcli
   shell: nmcli -t -m tabular -f GENERAL.CONNECTION dev show eth0
   register: nmcli_connection_name
+  when: ensure_static_ip | bool
 
 - name: Configure static ip address
   shell: |
@@ -22,6 +23,7 @@
     nmcli conn up "{{ nmcli_connection_name.stdout }}"
   vars:
     prefix: "{{ (ansible_default_ipv4.network ~ '/' ~ ansible_default_ipv4.netmask) | ipaddr('prefix') }}"
+  when: ensure_static_ip | bool
 
 - name: Enable ipv4 forwarding
   sysctl:

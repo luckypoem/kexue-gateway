@@ -4,6 +4,8 @@
 
 # 是否完全禁用 IPv6。
 disable_all_ipv6: true
+# 是否确保静态 IP。
+ensure_static_ip: true
 # 网关自身 DNS 服务器。
 local_dns_server: 114.114.114.114
 # 上游网关 IP 地址。可不填，将尝试从默认路由中解析。
