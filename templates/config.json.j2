@@ -1,13 +1,5 @@
 {{ ansible_managed | comment('cblock') }}
 
-{% set socks_settings %}
-"protocol": "socks",
-"settings": {
-    "auth": "noauth",
-    "udp": false
-}
-{% endset %}
-
 {% set main %}
 {
     "log": {
@@ -40,21 +32,6 @@
             }
         },
         {
-            "port": {{ socks_port }},
-            "tag": "socks",
-            {{ socks_settings }}
-        },
-        {
-            "port": {{ socks_direct_port }},
-            "tag": "socks-direct",
-            {{ socks_settings }}
-        },
-        {
-            "port": {{ socks_forward_port }},
-            "tag": "socks-forward",
-            {{ socks_settings }}
-        },
-        {
             "port": 5353,
             "tag": "dns",
             "protocol": "dokodemo-door",
@@ -73,6 +50,7 @@
                 "address": "127.0.0.1"
             }
         }
+        {{ v2ray_inbounds | map('to_json') | join(',') }}
     ],
     "dns": {
         "servers": [

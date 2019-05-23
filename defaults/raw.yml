@@ -1,5 +1,33 @@
+v2ray_inbounds:
+  - listen: 127.0.0.1
+    port: 8080
+    tag: api
+    protocol: dokodemo-door
+    settings:
+      address: 127.0.0.1
+
+  - port: "{{ socks_port }}"
+    tag: socks
+    protocol: socks
+    settings:
+      auth: noauth
+      udp: false
+
+  - port: "{{ socks_direct_port }}"
+    tag: socks-direct
+    protocol: socks
+    settings:
+      auth: noauth
+      udp: false
+
+  - port: "{{ socks_forward_port }}"
+    tag: socks-forward
+    protocol: socks
+    settings:
+      auth: noauth
+      udp: false
+
 v2ray_outbound_tag: forward
-v2ray_balancer_tag: forwards
 v2ray_outbound_defaults:
   mux:
     enabled: "{{ (mux_concurrency | int) > 0 }}"
@@ -29,6 +57,7 @@ v2ray_outbounds:
           method: "{{ ss_method }}"
           password: "{{ ss_password }}"
 
+v2ray_balancer_tag: forwards
 v2ray_balancers:
   - tag: "{{ v2ray_balancer_tag }}"
     selector:
