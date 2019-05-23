@@ -41,15 +41,6 @@
                 "network": "udp"
             }
         },
-        {
-            "listen": "{{ api_listen }}",
-            "port": "{{ api_port }}",
-            "tag": "api",
-            "protocol": "dokodemo-door",
-            "settings": {
-                "address": "127.0.0.1"
-            }
-        }
         {{ v2ray_inbounds | map('to_json') | join(',') }}
     ],
     "dns": {

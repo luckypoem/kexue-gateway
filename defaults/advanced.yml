@@ -70,8 +70,3 @@ log_access: /dev/null
 log_error: /var/log/v2ray.log
 # 日志等级。可选值请参考 V2ray 文档。
 log_level: warning
-
-# API 监听地址。
-api_listen: 127.0.0.1
-# API 监听端口。
-api_port: 8080
