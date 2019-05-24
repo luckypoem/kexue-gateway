@@ -41,6 +41,3 @@
 
     - name: flush iptables
       shell: flush-iptables.sh
-
-    - name: collect stats
-      shell: collect-stats.sh
