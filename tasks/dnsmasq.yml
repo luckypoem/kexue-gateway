@@ -20,6 +20,13 @@
     (not dnsmasq_china_list.stat.exists) or
     (ansible_date_time.epoch | int - dnsmasq_china_list.stat.ctime > 3600 * 24 * 7)
 
+- name: Copy dhcp leases helper script
+  copy:
+    src: files/dhcp-leases.sh
+    dest: /usr/local/bin/
+    mode: 0755
+  when: dhcp_enabled | bool
+
 - name: Restart dnsmasq service
   systemd:
     name: dnsmasq
