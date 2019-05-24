@@ -17,7 +17,7 @@
     - import_tasks: tasks/dnsmasq.yml
     - import_tasks: tasks/healthcheck.yml
     - import_tasks: tasks/frpc.yml
-      when: frpc_version | bool
+      when: frpc_version != ''
 
   handlers:
     - name: restart v2ray
