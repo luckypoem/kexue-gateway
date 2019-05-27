@@ -51,3 +51,5 @@
     src: v2ray.service.j2
     dest: /etc/systemd/system/v2ray.service
     mode: 0644
+  notify:
+    - restart v2ray
