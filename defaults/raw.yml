@@ -82,7 +82,7 @@ v2ray_routes:
 
   - type: field
     outboundTag: direct
-    domain: ["geosite:cn"]
+    domain: ["geosite:geolocation-cn"]
 
   - type: field
     outboundTag: direct
