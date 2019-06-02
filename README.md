@@ -54,7 +54,7 @@
 1. 下载 [Armbian Bionic](https://www.armbian.com/nanopi-neo-2/) 系统镜像。
 2. 将镜像刷入 TF 卡；推荐使用 [balenaEtcher](https://www.balena.io/etcher/) 工具，简单易用。
 3. 将 TF 卡插入 NanoPi 并连接到路由器的 LAN 口，随后上电开机。
-4. 通过路由器管理页面查看 NanoPi 的 IP 地址（亦可尝试 `nanopineo2`）；使用 SSH 登录到 NanoPi，用户名为 `root`，密码为 `1234`。
+4. 通过路由器管理页面获取 NanoPi 的 IP 地址；使用 SSH 登录到 NanoPi，用户名为 `root`，密码为 `1234`。
 5. 初次登录需强制修改密码并进行一些基本配置，根据提示完成即可。
 
 ### 电脑

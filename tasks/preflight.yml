@@ -2,6 +2,11 @@
   debug:
     var: ansible_default_ipv4
 
+- name: Set hostname
+  hostname:
+    name: "{{ kexue_hostname }}"
+  when: kexue_hostname != ''
+
 - name: Set timezone to Asia/Shanghai
   timezone:
     name: Asia/Shanghai
