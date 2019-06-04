@@ -77,7 +77,7 @@ v2ray_routes:
     outboundTag: direct
 
   - type: field
-    inboundTag: "{{ forward_sources if forward_sources is not none else ['0.0.0.0'] }}"
+    source: "{{ forward_sources if forward_sources is not none else ['0.0.0.0'] }}"
     balancerTag: "{{ v2ray_balancer_tag }}"
 
   - type: field
