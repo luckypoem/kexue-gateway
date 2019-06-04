@@ -81,6 +81,14 @@ v2ray_routes:
     balancerTag: "{{ v2ray_balancer_tag }}"
 
   - type: field
+    ip: "{{ direct_dests if direct_dests is not none else ['0.0.0.0'] }}"
+    outboundTag: direct
+
+  - type: field
+    ip: "{{ forward_dests if forward_dests is not none else ['0.0.0.0'] }}"
+    balancerTag: "{{ v2ray_balancer_tag }}"
+
+  - type: field
     outboundTag: direct
     domain: ["geosite:geolocation-cn"]
 
