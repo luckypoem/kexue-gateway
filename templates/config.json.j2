@@ -36,7 +36,7 @@
             "tag": "dns",
             "protocol": "dokodemo-door",
             "settings": {
-                "address": "{{ "8.8.8.8" if dns_enabled else "114.114.114.114" }}",
+                "address": "{{ dns_upstream }}",
                 "port": 53,
                 "network": "udp"
             }
