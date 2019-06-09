@@ -9,16 +9,19 @@
     dest: /etc/dnsmasq.conf
     mode: 0644
 
-- name: Gather dnsmasq-china-list last update time
-  stat:
-    path: /etc/dnsmasq.d/bogus-nxdomain.china.conf
-  register: dnsmasq_china_list
+- name: Generate dnsmasq-china-list installation script
+  template:
+    src: dnsmasq-china-list.sh.j2
+    dest: &dnsmasq_china_list /usr/local/bin/dnsmasq-china-list.sh
+    mode: 0755
+  notify:
+    - update dnsmasq-china-list
 
-- name: Install dnsmasq-china-list
-  script: files/dnsmasq-china-list.sh
-  when: >-
-    (not dnsmasq_china_list.stat.exists) or
-    (ansible_date_time.epoch | int - dnsmasq_china_list.stat.ctime > 3600 * 24 * 7)
+- name: Update dnsmasq-china-list on schedule
+  cron:
+    name: dnsmasq-china-list
+    job: *dnsmasq_china_list
+    special_time: weekly
 
 - name: Copy dhcp leases helper script
   copy:

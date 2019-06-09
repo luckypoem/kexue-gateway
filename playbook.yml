@@ -41,3 +41,6 @@
 
     - name: flush iptables
       shell: flush-iptables.sh
+
+    - name: update dnsmasq-china-list
+      shell: dnsmasq-china-list.sh
