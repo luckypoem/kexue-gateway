@@ -1,4 +1,19 @@
+v2ray_inbound_defaults:
+  sniffing:
+    enabled: "{{ sniffing_enabled }}"
+    destOverride: [http, tls]
+
 v2ray_inbounds:
+  - port: 12345
+    tag: tproxy
+    protocol: dokodemo-door
+    settings:
+      followRedirect: true
+      network: tcp,udp
+    streamSettings:
+      sockopt:
+        tproxy: redirect
+
   - port: "{{ socks_port }}"
     tag: socks
     protocol: socks

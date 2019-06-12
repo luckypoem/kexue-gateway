@@ -1,0 +1,27 @@
+- name: Make a copy of the inbounds variable
+  set_fact:
+    v2ray_processed_inbounds: []
+
+- name: Add the default settings into inbounds
+  set_fact:
+    v2ray_processed_inbounds: "{{ v2ray_processed_inbounds + [ item | combine(v2ray_inbound_defaults, recursive=true) ] }}"
+  loop: "{{ v2ray_inbounds }}"
+
+- name: Make a copy of the outbounds variable
+  set_fact:
+    v2ray_processed_outbounds: "{{ v2ray_outbounds }}"
+
+- name: Add the default tag into outbounds
+  set_fact:
+    v2ray_processed_outbounds: "{{ v2ray_processed_outbounds | combine(outbound, recursive=true) }}"
+  vars:
+    outbound: "{ '{{ item.key }}': { 'tag': '{{ v2ray_outbound_tag }}-{{ item.key }}' } }"
+  with_dict: "{{ v2ray_processed_outbounds }}"
+  when: item.value.tag is not defined
+
+- name: Add the default settings into outbounds
+  set_fact:
+    v2ray_processed_outbounds: "{{ v2ray_processed_outbounds | combine(outbound, recursive=true) }}"
+  vars:
+    outbound: "{ '{{ item.key }}': {{ v2ray_outbound_defaults }} }"
+  with_dict: "{{ v2ray_processed_outbounds }}"

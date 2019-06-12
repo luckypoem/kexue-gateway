@@ -9,29 +9,6 @@
     },
     "inbounds": [
         {
-            "port": 12345,
-            "tag": "tproxy",
-            "protocol": "dokodemo-door",
-            "settings": {
-                "followRedirect": true,
-                "network": "tcp,udp"
-            },
-            {% if sniffing_enabled %}
-            "sniffing": {
-                "enabled": true,
-                "destOverride": [
-                    "http",
-                    "tls"
-                ]
-            },
-            {% endif %}
-            "streamSettings": {
-                "sockopt": {
-                    "tproxy": "redirect"
-                }
-            }
-        },
-        {
             "port": 5353,
             "tag": "dns",
             "protocol": "dokodemo-door",
@@ -41,7 +18,7 @@
                 "network": "udp"
             }
         },
-        {{ v2ray_inbounds | map('to_json') | join(',') }}
+        {{ v2ray_processed_inbounds | map('to_json') | join(',') }}
     ],
     "dns": {
         "servers": [

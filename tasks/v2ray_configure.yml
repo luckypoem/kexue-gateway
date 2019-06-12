@@ -1,22 +1,3 @@
-- name: Make a copy of the outbounds variable
-  set_fact:
-    v2ray_processed_outbounds: "{{ v2ray_outbounds }}"
-
-- name: Add the default tag into outbounds
-  set_fact:
-    v2ray_processed_outbounds: "{{ v2ray_processed_outbounds | combine(outbound, recursive=true) }}"
-  vars:
-    outbound: "{ '{{ item.key }}': { 'tag': '{{ v2ray_outbound_tag }}-{{ item.key }}' } }"
-  with_dict: "{{ v2ray_processed_outbounds }}"
-  when: item.value.tag is not defined
-
-- name: Add the default settings into outbounds
-  set_fact:
-    v2ray_processed_outbounds: "{{ v2ray_processed_outbounds | combine(outbound, recursive=true) }}"
-  vars:
-    outbound: "{ '{{ item.key }}': {{ v2ray_outbound_defaults }} }"
-  with_dict: "{{ v2ray_processed_outbounds }}"
-
 - name: Generate v2ray config file to remote
   template:
     src: config.json.j2

@@ -11,6 +11,7 @@
 
   tasks:
     - import_tasks: tasks/preflight.yml
+    - import_tasks: tasks/v2ray_preflight.yml
     - import_tasks: tasks/v2ray_install.yml
     - import_tasks: tasks/v2ray_configure.yml
     - import_tasks: tasks/iptables.yml
