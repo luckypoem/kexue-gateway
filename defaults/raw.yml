@@ -4,21 +4,21 @@ v2ray_inbounds:
     protocol: socks
     settings:
       auth: noauth
-      udp: false
+      udp: true
 
   - port: "{{ socks_direct_port }}"
     tag: socks-direct
     protocol: socks
     settings:
       auth: noauth
-      udp: false
+      udp: true
 
   - port: "{{ socks_forward_port }}"
     tag: socks-forward
     protocol: socks
     settings:
       auth: noauth
-      udp: false
+      udp: true
 
 v2ray_outbound_tag: forward
 v2ray_outbound_defaults:
