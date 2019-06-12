@@ -1,11 +1,4 @@
 v2ray_inbounds:
-  - listen: 127.0.0.1
-    port: 8080
-    tag: api
-    protocol: dokodemo-door
-    settings:
-      address: 127.0.0.1
-
   - port: "{{ socks_port }}"
     tag: socks
     protocol: socks
