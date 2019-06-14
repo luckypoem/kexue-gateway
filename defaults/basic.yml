@@ -4,7 +4,7 @@ forward_mode: vmess
 # VMess 服务器地址。
 vm_server: ""
 # VMess 服务端口号。
-vm_port: ""
+vm_port: 0
 # VMess 用户 ID。
 vm_user_id: ""
 # VMess 额外 ID 数量。
