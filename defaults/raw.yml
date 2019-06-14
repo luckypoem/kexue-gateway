@@ -75,6 +75,10 @@ v2ray_balancers:
 
 v2ray_routes:
   - type: field
+    inboundTag: [api]
+    outboundTag: api
+
+  - type: field
     inboundTag: [dns]
     balancerTag: '{{ v2ray_balancer_tag if dns_forwarding else "direct" }}'
 
@@ -114,6 +118,7 @@ v2ray_routes:
     balancerTag: direct
     protocol: bittorrent
 
+v2ray_final_routes:
   - type: field
     balancerTag: "{{ v2ray_balancer_tag }}"
     network: tcp,udp

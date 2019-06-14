@@ -44,14 +44,7 @@
     "routing": {
         "domainStrategy": "{{ domain_strategy }}",
         "balancers": {{ v2ray_balancers | to_json }},
-        "rules": [
-            {
-                "type": "field",
-                "inboundTag": ["api"],
-                "outboundTag": "api"
-            },
-            {{ v2ray_routes | map('to_json') | join(',') }}
-        ]
+        "rules": {{ (v2ray_routes + v2ray_final_routes) | to_json }}
     },
     "api": {
         "tag": "api",
