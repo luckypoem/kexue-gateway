@@ -11,7 +11,7 @@ disable_all_ipv6: true
 # 是否确保静态 IP。
 ensure_static_ip: true
 # 网关自身 DNS 服务器。
-local_dns_server: 1.1.1.1
+local_dns_server: 8.8.8.8
 # 上游网关 IP 地址。可不填，将尝试从默认路由中解析。
 local_gateway_ip: ""
 # 是否开启 DNS 劫持。开启后，DNS 查询请求（目标端口为 53 的 UDP 流量）将会被强制重定向至网关的 DNS 服务。
