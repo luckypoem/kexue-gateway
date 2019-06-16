@@ -31,10 +31,15 @@ done
 
 for _server in "${SERVERS[@]}"; do
   for _conf in "${CONF_WITH_SERVERS[@]}"; do
-    cp "$WORKDIR/$_conf.conf" "/etc/dnsmasq.d/$_conf.$_server.conf"
-  done
+    _path="/etc/dnsmasq.d/$_conf.$_server.conf"
 
-  sed -i "s|^\(server.*\)/[^/]*$|\1/$_server|" /etc/dnsmasq.d/*."$_server".conf
+    cp "$WORKDIR/$_conf.conf" "$_path"
+    sed -i "s|^\(server.*\)/[^/]*$|\1/$_server|" "$_path"
+
+    {% for host in (dns_china_excludes if dns_china_excludes else []) %}
+    sed -i "s|^server.*/{{ host }}/.*$|# Removed {{ host }}|" "$_path"
+    {% endfor %}
+  done
 done
 
 echo "Restarting dnsmasq service..."

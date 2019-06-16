@@ -30,6 +30,9 @@
     mode: 0755
   when: dhcp_enabled | bool
 
+- name: Trigger handlers
+  meta: flush_handlers
+
 - name: Restart dnsmasq service
   systemd:
     name: dnsmasq
