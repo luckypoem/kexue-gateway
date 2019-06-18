@@ -42,6 +42,7 @@ v2ray_outbound_defaults:
     concurrency: "{{ mux_concurrency }}"
   streamSettings:
     sockopt:
+      tcpFastOpen: "{{ tcp_fast_open }}"
       mark: "{{ so_mark_forward }}"
 
 v2ray_outbounds:

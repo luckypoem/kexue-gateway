@@ -79,6 +79,8 @@ sniffing_enabled: true
 domain_strategy: IPOnDemand
 # 空闲连接超时时间（单位：秒）。若某 TCP 连接在该时间内未传输任何数据（包括上行和下行），则中断该连接。
 idle_connections_timeout: 300
+# 是否开启 TCP Fast Open。
+tcp_fast_open: true
 
 # 访问日志路径。
 log_access: /dev/null
