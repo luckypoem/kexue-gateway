@@ -9,7 +9,7 @@ healthchecks_uuid: ""
 healthcheck_commands:
   - 'echo "System uptime: $(uptime)"'
   # - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
-  - 'curl -4fsS -m 5 --retry 3 -w "\nRemote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.google.com/'
+  - 'curl -4fsS -m 5 --retry 3 -o /dev/null -w "\nRemote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.google.com/'
 
 # --------------
 #   frpc 配置
