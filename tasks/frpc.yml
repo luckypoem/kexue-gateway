@@ -1,6 +1,6 @@
 - name: Download the frp tarball
   get_url:
-    url: "https://github.com/fatedier/frp/releases/download/v{{ frpc_version }}/frp_{{ frpc_version }}_linux_arm64.tar.gz"
+    url: "https://github.com/fatedier/frp/releases/download/v{{ frpc_version }}/frp_{{ frpc_version }}_{{ frpc_os_arch }}.tar.gz"
     dest: /tmp/frp.tar.gz
 
 - name: Ensure frp directory exists
@@ -19,7 +19,7 @@
 
 - name: Create symbolic links
   file:
-    src: "/usr/local/frp/frp_{{ frpc_version }}_linux_arm64/frpc"
+    src: "/usr/local/frp/frp_{{ frpc_version }}_{{ frpc_os_arch }}/frpc"
     dest: /usr/bin/frpc
     state: link
 
