@@ -51,3 +51,11 @@
     name: systemd-resolved
     state: stopped
     enabled: false
+  when: systemd_resolved == 'stopped'
+
+- name: Set systemd-resolved mode
+  file:
+    src: /run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+  when: systemd_resolved == 'direct'

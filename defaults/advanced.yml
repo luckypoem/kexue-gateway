@@ -8,6 +8,9 @@ kexue_hostname: ""
 max_open_files: 2048
 # 是否完全禁用 IPv6。
 disable_all_ipv6: true
+# systemd-resolved 服务配置。可选项 stopped 或 direct。
+systemd_resolved: stopped
+
 # 是否确保静态 IP。
 ensure_static_ip: true
 # 网关自身 DNS 服务器。
