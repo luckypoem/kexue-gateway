@@ -5,11 +5,10 @@
 # healthchecks.io 提供的 UUID。当不为空字符串时，将会启用健康检查上报。
 healthchecks_uuid: ""
 # 健康检查命令组。可配置多条命令，将会按顺序执行。当其中任意命令的退出代码非零时，后续命令不再继续执行。
-# 若退出代码均为零，则认为健康（OK）；否则认为故障（Failure）。
-# STDOUT 的输出将会被上报到 healthchecks.io；STDERR 的输出将会被记录到 /var/log/healthcheck.log。
+# 若退出代码均为零，则认为健康（OK）；否则认为故障（Failure）；STDOUT 的输出将会被上报到 healthchecks.io。
 healthcheck_commands:
   - 'echo "System uptime: $(uptime)"'
-  - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
+  # - 'cat /etc/armbianmonitor/datasources/soctemp | awk "{ printf(\"CPU temperature: %0.1f°C\n\", \$1/1000); }"'
   - 'curl -4fsS -m 5 --retry 3 -w "\nRemote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.google.com/'
 
 # --------------

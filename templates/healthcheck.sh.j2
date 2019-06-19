@@ -2,19 +2,11 @@
 
 {{ ansible_managed | comment }}
 
-process() {
-    if RESULT=$({{ healthcheck_commands | join(' && ') }}); then
-        URI=''
-    else
-        URI='/fail'
-    fi
+if RESULT=$({{ healthcheck_commands | join(' && ') }}); then
+    URI=''
+else
+    URI='/fail'
+fi
 
-    echo "$RESULT"
-
-    curl -4fsS -m 5 --retry 3 -X POST -H "Content-Type: text/plain" -d "$RESULT" \
-        "http://hc-ping.com/{{ healthchecks_uuid }}$URI"
-}
-
-echo "------$(date)" 1>&2
-process
-echo 1>&2
+curl -v -4fsS -m 5 --retry 3 -X POST -H "Content-Type: text/plain" -d "$RESULT" \
+    "http://hc-ping.com/{{ healthchecks_uuid }}$URI"

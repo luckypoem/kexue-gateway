@@ -7,6 +7,6 @@
 - name: Add healthcheck to crontab
   cron:
     name: healthcheck
-    job: /usr/local/sbin/healthcheck.sh 2>>/var/log/healthcheck.log
+    job: /usr/local/sbin/healthcheck.sh | logger -t healthcheck
     minute: "*"
     disabled: "{{ healthchecks_uuid == '' }}"
