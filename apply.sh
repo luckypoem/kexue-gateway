@@ -26,7 +26,7 @@ main() {
             printf "Please input your NanoPi IP: "
             read IP
         done;
-        echo "$IP" > "$INVENTORY"
+        echo "$IP ansible_user=root" > "$INVENTORY"
     fi
 
     EXTRA_VARS=$1

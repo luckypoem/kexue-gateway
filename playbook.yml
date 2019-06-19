@@ -1,5 +1,4 @@
 - hosts: all
-  remote_user: root
   vars_files:
     - defaults/basic.yml
     - defaults/advanced.yml
