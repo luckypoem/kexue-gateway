@@ -105,7 +105,7 @@
 
 - 不支持 IPv6；原因：普及率低。
 - 不支持 UDP Relay；原因：配置不当易引发副作用，例如延迟升高等。
-- 本项目目前亦可用于 Armbian Stretch 和 Ubuntu Server 18.04 (AMD64)；但由于个人精力有限，无法保证长期兼容性。
+- 本项目目前亦可用于 Armbian Stretch、[FriendlyCore](http://wiki.friendlyarm.com/wiki/index.php/FriendlyCore_(based_on_ubuntu-core_with_Qt)/zh) 以及基于 AMD64 架构的 [Ubuntu Server 18.04](https://ubuntu.com/download/server)；但由于个人精力有限，无法保证长期兼容性。
 
 ## 感谢
 
