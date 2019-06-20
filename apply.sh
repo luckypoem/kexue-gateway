@@ -34,14 +34,17 @@ main() {
     shift
 
     if [[ "$@" == "" ]]; then
-        MORE_OPTIONS="-vvv --ask-pass"
+        MORE_OPTIONS="-vv"
     elif [[ "$1" == "-" ]]; then
         MORE_OPTIONS=""
     else
         MORE_OPTIONS="$@"
     fi
 
-    ansible-playbook $MORE_OPTIONS -i "$INVENTORY" -e "@$EXTRA_VARS" playbook.yml
+    (
+        export ANSIBLE_STDOUT_CALLBACK=debug
+        ansible-playbook $MORE_OPTIONS -i "$INVENTORY" -e "@$EXTRA_VARS" playbook.yml
+    )
 }
 
 preflight
