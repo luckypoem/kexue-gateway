@@ -24,7 +24,7 @@
     - v2ctl
 
 - name: Validate v2* executable files
-  shell: "{{ v2ray_install_path }}/v2ctl {{ v2ray_install_path }}/{{ item }}"
+  shell: "{{ v2ray_install_path }}/v2ctl verify {{ v2ray_install_path }}/{{ item }}"
   changed_when: false
   loop:
     - v2ray
