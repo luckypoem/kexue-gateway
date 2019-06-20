@@ -10,7 +10,7 @@ vm_user_id: ""
 # VMess 额外 ID 数量。
 vm_user_alter_id: 0
 # VMess 加密方式。对于 NanoPi NEO 2，推荐使用 aes-128-gcm（或 auto）。
-vm_user_security: "auto"
+vm_user_security: auto
 
 # Shadowsocks 服务器地址。
 ss_server: ""
