@@ -26,6 +26,7 @@ main() {
             printf "Please input your NanoPi IP: "
             read IP
         done;
+        ssh-copy-id "root@$IP"
         echo "$IP ansible_user=root" > "$INVENTORY"
     fi
 
