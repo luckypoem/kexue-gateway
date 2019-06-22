@@ -5,9 +5,6 @@
     - defaults/extensions.yml
     - defaults/rules.yml
     - defaults/raw.yml
-  vars:
-    ansible_python_interpreter: python3
-    ansible_pipelining: true
 
   tasks:
     - import_tasks: tasks/preflight.yml
