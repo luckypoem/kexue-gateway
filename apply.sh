@@ -42,7 +42,7 @@ main() {
     fi
 
     (
-        export ANSIBLE_STDOUT_CALLBACK=debug
+        export ANSIBLE_STDOUT_CALLBACK="${ANSIBLE_STDOUT_CALLBACK=debug}"
         ansible-playbook $MORE_OPTIONS -i "$INVENTORY" -e "@$EXTRA_VARS" playbook.yml
     )
 }
