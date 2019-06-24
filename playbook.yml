@@ -19,27 +19,4 @@
       when: frpc_version != ''
 
   handlers:
-    - name: restart v2ray
-      systemd:
-        daemon_reload: true
-        enabled: true
-        name: v2ray
-        state: restarted
-
-    - name: restart frpc
-      systemd:
-        daemon_reload: true
-        enabled: true
-        name: frpc
-        state: restarted
-
-    - name: restart cron
-      systemd:
-        name: cron
-        state: restarted
-
-    - name: flush iptables
-      shell: flush-iptables.sh
-
-    - name: update dnsmasq-china-list
-      shell: dnsmasq-china-list.sh
+    - import_tasks: handlers/main.yml
