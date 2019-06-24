@@ -14,6 +14,7 @@
   unarchive:
     src: "{{ v2ray_archive }}"
     dest: "{{ v2ray_install_path }}"
+    keep_newer: true
 
 - name: Ensure execute permission
   file:

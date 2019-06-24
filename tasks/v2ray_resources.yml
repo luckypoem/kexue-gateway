@@ -1,0 +1,11 @@
+- name: Generate resources update script
+  template:
+    src: update-v2ray-resources.sh.j2
+    dest: &update_v2ray_resources /usr/local/bin/update-v2ray-resources.sh
+    mode: 0755
+
+- name: Update resources on schedule
+  cron:
+    name: update-v2ray-resources
+    job: *update_v2ray_resources
+    special_time: weekly
