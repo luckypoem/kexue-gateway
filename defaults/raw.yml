@@ -35,7 +35,6 @@ v2ray_inbounds:
       auth: noauth
       udp: true
 
-v2ray_outbound_tag: forward
 v2ray_outbound_defaults:
   mux:
     enabled: "{{ (mux_concurrency | int) > 0 }}"
@@ -66,13 +65,7 @@ v2ray_outbounds:
           method: "{{ ss_method }}"
           password: "{{ ss_password }}"
 
-v2ray_balancer_tag: forwards
-v2ray_balancers:
-  - tag: direct
-    selector: [direct]
-  - tag: "{{ v2ray_balancer_tag }}"
-    selector:
-      - "{{ v2ray_outbound_tag }}"
+v2ray_default_outbound: "{{ forward_mode }}"
 
 v2ray_routes:
   - type: field
@@ -81,45 +74,45 @@ v2ray_routes:
 
   - type: field
     inboundTag: [dns]
-    balancerTag: '{{ v2ray_balancer_tag if dns_forwarding else "direct" }}'
+    outboundTag: '{{ v2ray_default_outbound if dns_forwarding else "direct" }}'
 
   - type: field
     inboundTag: [socks-direct]
-    balancerTag: direct
+    outboundTag: direct
 
   - type: field
     inboundTag: [socks-forward]
-    balancerTag: "{{ v2ray_balancer_tag }}"
+    outboundTag: "{{ v2ray_default_outbound }}"
 
   - type: field
     source: "{{ direct_sources if direct_sources is not none else ['0.0.0.0'] }}"
-    balancerTag: direct
+    outboundTag: direct
 
   - type: field
     source: "{{ forward_sources if forward_sources is not none else ['0.0.0.0'] }}"
-    balancerTag: "{{ v2ray_balancer_tag }}"
+    outboundTag: "{{ v2ray_default_outbound }}"
 
   - type: field
     ip: "{{ direct_dests if direct_dests is not none else ['0.0.0.0'] }}"
-    balancerTag: direct
+    outboundTag: direct
 
   - type: field
     ip: "{{ forward_dests if forward_dests is not none else ['0.0.0.0'] }}"
-    balancerTag: "{{ v2ray_balancer_tag }}"
+    outboundTag: "{{ v2ray_default_outbound }}"
 
   - type: field
-    balancerTag: direct
+    outboundTag: direct
     domain: ["geosite:geolocation-cn"]
 
   - type: field
-    balancerTag: direct
+    outboundTag: direct
     ip: ["geoip:cn"]
 
   - type: field
-    balancerTag: direct
+    outboundTag: direct
     protocol: bittorrent
 
 v2ray_final_routes:
   - type: field
-    balancerTag: "{{ v2ray_balancer_tag }}"
+    outboundTag: "{{ v2ray_default_outbound }}"
     network: tcp,udp

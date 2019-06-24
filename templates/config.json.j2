@@ -43,7 +43,6 @@
     ],
     "routing": {
         "domainStrategy": "{{ domain_strategy }}",
-        "balancers": {{ v2ray_balancers | to_json }},
         "rules": {{ (v2ray_routes + v2ray_final_routes) | to_json }}
     },
     "api": {
