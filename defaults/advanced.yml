@@ -11,7 +11,7 @@ disable_all_ipv6: true
 # systemd-resolved 服务配置。可选项 stopped 或 direct。
 systemd_resolved: stopped
 
-# 是否确保静态 IP。
+# 是否确保静态 IP。暂时仅支持 Armbian，不支持 Ubuntu Server。
 ensure_static_ip: true
 # 网关自身 DNS 服务器。
 local_dns_server: 1.1.1.1
