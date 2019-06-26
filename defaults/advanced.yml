@@ -14,7 +14,7 @@ systemd_resolved: stopped
 # 是否确保静态 IP。
 ensure_static_ip: true
 # 网关自身 DNS 服务器。
-local_dns_server: 8.8.8.8
+local_dns_server: 1.1.1.1
 # 上游网关 IP 地址。可不填，将尝试从默认路由中解析。
 local_gateway_ip: ""
 
