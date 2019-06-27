@@ -36,7 +36,7 @@ v2ray_inbounds:
       udp: true
 
 v2ray_outbound_direct:
-  tag: "{{ v2ray_direct_outbound }}"
+  tag: "direct"
   protocol: freedom
   streamSettings:
     sockopt:
