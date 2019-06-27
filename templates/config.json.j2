@@ -26,15 +26,7 @@
         ]
     },
     "outbounds": [
-        {
-            "tag": "direct",
-            "protocol": "freedom",
-            "streamSettings": {
-                "sockopt": {
-                    "mark": {{ so_mark_direct }}
-                }
-            }
-        },
+        {{ v2ray_outbound_direct | to_json }},
         {% if forward_mode == '*' %}
             {{ v2ray_processed_outbounds.values() | list | map('to_json') | join(',') }}
         {% else %}

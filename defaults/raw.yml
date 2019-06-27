@@ -35,6 +35,13 @@ v2ray_inbounds:
       auth: noauth
       udp: true
 
+v2ray_outbound_direct:
+  tag: "{{ v2ray_direct_outbound }}"
+  protocol: freedom
+  streamSettings:
+    sockopt:
+      mark: "{{ so_mark_direct }}"
+
 v2ray_outbound_defaults:
   mux:
     enabled: "{{ (mux_concurrency | int) > 0 }}"
