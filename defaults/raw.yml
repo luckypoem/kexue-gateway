@@ -116,11 +116,11 @@ v2ray_routes:
     outboundTag: "{{ v2ray_direct_outbound }}"
     ip: ["geoip:cn"]
 
+v2ray_final_routes:
   - type: field
     outboundTag: "{{ v2ray_direct_outbound }}"
     protocol: bittorrent
 
-v2ray_final_routes:
   - type: field
     outboundTag: "{{ v2ray_forward_outbound }}"
     network: tcp,udp
