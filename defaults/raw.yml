@@ -65,7 +65,8 @@ v2ray_outbounds:
           method: "{{ ss_method }}"
           password: "{{ ss_password }}"
 
-v2ray_default_outbound: "{{ forward_mode }}"
+v2ray_forward_outbound: "{{ forward_mode }}"
+v2ray_direct_outbound: "direct"
 
 v2ray_routes:
   - type: field
@@ -74,45 +75,45 @@ v2ray_routes:
 
   - type: field
     inboundTag: [dns]
-    outboundTag: '{{ v2ray_default_outbound if dns_forwarding else "direct" }}'
+    outboundTag: '{{ v2ray_forward_outbound if dns_forwarding else v2ray_direct_outbound }}'
 
   - type: field
     inboundTag: [socks-direct]
-    outboundTag: direct
+    outboundTag: "{{ v2ray_direct_outbound }}"
 
   - type: field
     inboundTag: [socks-forward]
-    outboundTag: "{{ v2ray_default_outbound }}"
+    outboundTag: "{{ v2ray_forward_outbound }}"
 
   - type: field
     source: "{{ direct_sources if direct_sources is not none else ['0.0.0.0'] }}"
-    outboundTag: direct
+    outboundTag: "{{ v2ray_direct_outbound }}"
 
   - type: field
     source: "{{ forward_sources if forward_sources is not none else ['0.0.0.0'] }}"
-    outboundTag: "{{ v2ray_default_outbound }}"
+    outboundTag: "{{ v2ray_forward_outbound }}"
 
   - type: field
     ip: "{{ direct_dests if direct_dests is not none else ['0.0.0.0'] }}"
-    outboundTag: direct
+    outboundTag: "{{ v2ray_direct_outbound }}"
 
   - type: field
     ip: "{{ forward_dests if forward_dests is not none else ['0.0.0.0'] }}"
-    outboundTag: "{{ v2ray_default_outbound }}"
+    outboundTag: "{{ v2ray_forward_outbound }}"
 
   - type: field
-    outboundTag: direct
+    outboundTag: "{{ v2ray_direct_outbound }}"
     domain: ["geosite:geolocation-cn"]
 
   - type: field
-    outboundTag: direct
+    outboundTag: "{{ v2ray_direct_outbound }}"
     ip: ["geoip:cn"]
 
   - type: field
-    outboundTag: direct
+    outboundTag: "{{ v2ray_direct_outbound }}"
     protocol: bittorrent
 
 v2ray_final_routes:
   - type: field
-    outboundTag: "{{ v2ray_default_outbound }}"
+    outboundTag: "{{ v2ray_forward_outbound }}"
     network: tcp,udp
