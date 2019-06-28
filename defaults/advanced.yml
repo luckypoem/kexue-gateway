@@ -22,6 +22,8 @@ local_gateway_ip: ""
 # 以下为 IPTables 配置
 # ------------------
 
+# 是否重定向非本机 UDP 流量。暂时不兼容 Armbian。
+udp_enabled: false
 # 是否开启 DNS 劫持。开启后，DNS 查询请求（目标端口为 53 的 UDP 流量）将会被强制重定向至网关的 DNS 服务。
 # 可在客户端无法修改 DNS 服务器时使用（例如 Chromecast）。
 # 若客户端 DNS 服务器处于同一子网，通常该选项无效，流量会直达同一子网内的目标而不经过网关。

@@ -42,10 +42,12 @@ $ipt -t mangle -A V2RAY_MARK -d {{ ip }} -j RETURN
 $ipt -t nat -A V2RAY -p tcp -j REDIRECT --to-ports 12345
 
 # Add any UDP rules
+{% if udp_enabled %}
 ip rule add $ip_rule
 ip route add $ip_route
-# $ipt -t mangle -A V2RAY      -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
+$ipt -t mangle -A V2RAY      -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
 # $ipt -t mangle -A V2RAY_MARK -p udp -j MARK --set-mark 0x01
+{% endif %}
 
 # Apply the rules
 {% if dns_hijacking %}
@@ -53,9 +55,9 @@ $ipt -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
 {% endif %}
 
 $ipt -t nat -A PREROUTING -p tcp -j V2RAY
-# $ipt -t mangle -A PREROUTING -p udp -j V2RAY
+$ipt -t mangle -A PREROUTING -p udp -j V2RAY
 
 {% if local_traffic %}
 $ipt -t nat -A OUTPUT -p tcp -j V2RAY
-# $ipt -t mangle -A OUTPUT -p udp -j V2RAY_MARK
+$ipt -t mangle -A OUTPUT -p udp -j V2RAY_MARK
 {% endif %}
