@@ -27,6 +27,7 @@
     },
     "outbounds": [
         {{ v2ray_outbound_direct | to_json }},
+        {{ v2ray_outbound_block | to_json }},
         {% if forward_mode == '*' %}
             {{ v2ray_processed_outbounds.values() | list | map('to_json') | join(',') }}
         {% else %}

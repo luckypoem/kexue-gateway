@@ -36,11 +36,15 @@ v2ray_inbounds:
       udp: true
 
 v2ray_outbound_direct:
-  tag: "direct"
+  tag: direct
   protocol: freedom
   streamSettings:
     sockopt:
       mark: "{{ so_mark_direct }}"
+
+v2ray_outbound_block:
+  tag: block
+  protocol: blackhole
 
 v2ray_outbound_defaults:
   mux:
