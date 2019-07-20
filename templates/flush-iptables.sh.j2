@@ -4,20 +4,14 @@
 
 export PATH=$PATH:/sbin
 
-ip_rule="fwmark 1 lookup 100"
-ip_route="local default dev lo table 100"
-
 # Remove current rules
 iptables-save -c | grep -v "V2RAY" | iptables-restore -c
-ip rule del $ip_rule 2>/dev/null
-ip route del $ip_route 2>/dev/null
 
-set -euo pipefail
+set -xeuo pipefail
 
 # Create new chain
 iptables -t nat -N V2RAY
 iptables -t mangle -N V2RAY
-iptables -t mangle -N V2RAY_MARK
 
 # Ignore V2Ray outbound traffic
 iptables -t nat -A V2RAY -m mark --mark {{ so_mark_direct }} -j RETURN
@@ -26,37 +20,29 @@ iptables -t nat -A V2RAY -m mark --mark {{ so_mark_forward }} -j RETURN
 iptables -t mangle -A V2RAY -m mark --mark {{ so_mark_direct }} -j RETURN
 iptables -t mangle -A V2RAY -m mark --mark {{ so_mark_forward }} -j RETURN
 
-iptables -t mangle -A V2RAY_MARK -m mark --mark {{ so_mark_direct }} -j RETURN
-iptables -t mangle -A V2RAY_MARK -m mark --mark {{ so_mark_forward }} -j RETURN
-
-# Ignore LANs and any other addresses you'd like to bypass the proxy
 # See Wikipedia and RFC5735 for full list of reserved networks.
-{% for ip in reversed_ips %}
-iptables -t nat -A V2RAY -d {{ ip }} -j RETURN
-iptables -t mangle -A V2RAY -d {{ ip }} -j RETURN
-iptables -t mangle -A V2RAY_MARK -d {{ ip }} -j RETURN
+{% for addr in special_addresses %}
+iptables -t nat -A V2RAY -d {{ addr }} -j RETURN
+iptables -t mangle -A V2RAY -d {{ addr }} -j RETURN
 {% endfor %}
+
+# Redirect port 53 to local dnsmasq.
+{% if dns_hijacking %}
+iptables -t nat -A V2RAY --dport 53 -j REDIRECT --to-ports 53
+{% endif %}
+
+# Don't redirect UDP traffic in NAT table.
+iptables -t nat -A V2RAY -p udp -j RETURN
 
 # Anything else should be redirected to Dokodemo-door's local port
 iptables -t nat -A V2RAY -p tcp -j REDIRECT --to-ports 12345
-
-# Add any UDP rules
 {% if udp_enabled %}
-ip rule add $ip_rule
-ip route add $ip_route
-iptables -t mangle -A V2RAY      -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
-# iptables -t mangle -A V2RAY_MARK -p udp -j MARK --set-mark 0x01
+iptables -t mangle -A V2RAY -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
 {% endif %}
 
 # Apply the rules
-{% if dns_hijacking %}
-iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-{% endif %}
-
-iptables -t nat -A PREROUTING -p tcp -j V2RAY
-iptables -t mangle -A PREROUTING -p udp -j V2RAY
-
 {% if local_traffic %}
-iptables -t nat -A OUTPUT -p tcp -j V2RAY
-iptables -t mangle -A OUTPUT -p udp -j V2RAY_MARK
+iptables -t nat -A OUTPUT -j V2RAY
 {% endif %}
+iptables -t nat -A PREROUTING -j V2RAY
+iptables -t mangle -A PREROUTING -j V2RAY

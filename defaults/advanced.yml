@@ -31,8 +31,9 @@ dns_hijacking: false
 # SO_MARK 设置。用于 iptables 甄别流量来源，一般无需修改。
 so_mark_direct: 255
 so_mark_forward: 254
-# 保留 IP 地址（段）。目标 IP 属于这些 IP 段的流量将不会进入 V2ray，而是直接由 iptables RETURN。
-reversed_ips:
+# 特殊 IP 地址（段）。完整列表请参见 RFC5735。
+# 目标 IP 属于这些 IP 段的流量将不会进入 V2ray，而是直接由 iptables RETURN。
+special_addresses:
   - 0.0.0.0/8
   - 10.0.0.0/8
   - 127.0.0.0/8
