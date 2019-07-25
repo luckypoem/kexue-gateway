@@ -14,26 +14,19 @@ v2ray_inbounds:
       sockopt:
         tproxy: redirect
 
-  - port: "{{ socks_port }}"
-    tag: socks
+  - port: "{{ socks_proxy_port }}"
+    tag: socks-proxy
     protocol: socks
     settings:
       auth: noauth
       udp: true
 
-  - port: "{{ socks_direct_port }}"
-    tag: socks-direct
-    protocol: socks
+  - port: "{{ http_proxy_port }}"
+    tag: http-proxy
+    protocol: http
     settings:
-      auth: noauth
-      udp: true
-
-  - port: "{{ socks_forward_port }}"
-    tag: socks-forward
-    protocol: socks
-    settings:
-      auth: noauth
-      udp: true
+      accounts: []
+      allowTransparent: false
 
 v2ray_outbound_direct:
   tag: direct
@@ -90,27 +83,23 @@ v2ray_routes:
 
   - type: field
     outboundTag: "{{ v2ray_direct_outbound }}"
-    inboundTag: [socks-direct]
-
-  - type: field
-    outboundTag: "{{ v2ray_forward_outbound }}"
-    inboundTag: [socks-forward]
-
-  - type: field
-    outboundTag: "{{ v2ray_direct_outbound }}"
     source: "{{ direct_sources if direct_sources is not none else ['0.0.0.0'] }}"
+    inboundTag: [tproxy]
 
   - type: field
     outboundTag: "{{ v2ray_forward_outbound }}"
     source: "{{ forward_sources if forward_sources is not none else ['0.0.0.0'] }}"
+    inboundTag: [tproxy]
 
   - type: field
     outboundTag: "{{ v2ray_direct_outbound }}"
     ip: "{{ direct_dests if direct_dests is not none else ['0.0.0.0'] }}"
+    inboundTag: [tproxy]
 
   - type: field
     outboundTag: "{{ v2ray_forward_outbound }}"
     ip: "{{ forward_dests if forward_dests is not none else ['0.0.0.0'] }}"
+    inboundTag: [tproxy]
 
   - type: field
     outboundTag: "{{ v2ray_direct_outbound }}"
