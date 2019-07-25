@@ -17,6 +17,7 @@
     - import_tasks: tasks/healthcheck.yml
     - import_tasks: tasks/frpc.yml
       when: frpc_version != ''
+    - import_tasks: tasks/landing.yml
 
   handlers:
     - import_tasks: handlers/main.yml
