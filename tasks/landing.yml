@@ -3,8 +3,11 @@
     msg: |
       To have a quick look, use the following commands in your terminal:
 
-      $ export http_proxy=http://{{ ansible_default_ipv4.address }}:{{ http_proxy_port }} https_proxy=$http_proxy all_proxy=socks5://{{ ansible_default_ipv4.address }}:{{ socks_proxy_port }}
+      $ export http_proxy={{ http_proxy }} https_proxy=$http_proxy all_proxy={{ socks_proxy }}
       $ curl ipinfo.io
 
       It's recommended to save this as an alias in your shell's rc file.
       For more information, please visit https://en.wikipedia.org/wiki/Alias_(command).
+  vars:
+    http_proxy: "http://{{ ansible_default_ipv4.address }}:{{ http_proxy_port }}"
+    socks_proxy: "socks5://{{ ansible_default_ipv4.address }}:{{ socks_proxy_port }}"
