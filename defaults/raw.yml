@@ -69,7 +69,7 @@ v2ray_outbounds:
           method: "{{ ss_method }}"
           password: "{{ ss_password }}"
 
-v2ray_forward_outbound: "{{ forward_mode }}"
+v2ray_forward_outbound: "{{ forward_mode if forward_mode != '*' else None }}"
 v2ray_direct_outbound: "direct"
 
 v2ray_routes:
@@ -78,28 +78,8 @@ v2ray_routes:
     inboundTag: [api]
 
   - type: field
-    outboundTag: '{{ v2ray_forward_outbound if dns_forwarding else v2ray_direct_outbound }}'
+    outboundTag: "{{ dns_forward_outbound }}"
     inboundTag: [dns]
-
-  - type: field
-    outboundTag: "{{ v2ray_direct_outbound }}"
-    source: "{{ direct_sources if direct_sources is not none else ['0.0.0.0'] }}"
-    inboundTag: [tproxy]
-
-  - type: field
-    outboundTag: "{{ v2ray_forward_outbound }}"
-    source: "{{ forward_sources if forward_sources is not none else ['0.0.0.0'] }}"
-    inboundTag: [tproxy]
-
-  - type: field
-    outboundTag: "{{ v2ray_direct_outbound }}"
-    ip: "{{ direct_dests if direct_dests is not none else ['0.0.0.0'] }}"
-    inboundTag: [tproxy]
-
-  - type: field
-    outboundTag: "{{ v2ray_forward_outbound }}"
-    ip: "{{ forward_dests if forward_dests is not none else ['0.0.0.0'] }}"
-    inboundTag: [tproxy]
 
   - type: field
     outboundTag: "{{ v2ray_direct_outbound }}"
