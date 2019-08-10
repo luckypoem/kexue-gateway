@@ -78,7 +78,7 @@ v2ray_routes:
     inboundTag: [api]
 
   - type: field
-    outboundTag: "{{ dns_forward_outbound }}"
+    outboundTag: "{{ dns_forward_outbound if dns_forward_outbound != '' else v2ray_direct_outbound }}"
     inboundTag: [dns]
 
   - type: field
