@@ -2,7 +2,7 @@
 set -e
 
 WORKDIR="$(mktemp -d)"
-SERVERS=({{ dns_china_upstreams | join(' ') }})
+SERVERS=({{ dnsmasq_china_upstreams | join(' ') }})
 # Not using best possible CDN pop: 1.2.4.8 210.2.4.8 223.5.5.5 223.6.6.6
 # Dirty cache: 119.29.29.29 182.254.116.116
 
@@ -36,7 +36,7 @@ for _server in "${SERVERS[@]}"; do
     cp "$WORKDIR/$_conf.conf" "$_path"
     sed -i "s|^\(server.*\)/[^/]*$|\1/$_server|" "$_path"
 
-    {% for host in (dns_china_excludes if dns_china_excludes else []) %}
+    {% for host in (dnsmasq_china_excludes if dnsmasq_china_excludes else []) %}
     sed -i "s|^server.*/{{ host }}/.*$|# Removed {{ host }}|" "$_path"
     {% endfor %}
   done

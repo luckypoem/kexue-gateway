@@ -65,7 +65,9 @@ no-resolv
 # non-public domains.
 #server=/localnet/192.168.0.1
 all-servers
-server=127.0.0.1#5353
+{% for server in (dnsmasq_upstreams if dnsmasq_upstreams else []) %}
+server={{ server }}
+{% endfor %}
 
 # Example of routing PTR queries to nameservers: this will send all
 # address->name queries for 192.168.3/24 to nameserver 10.1.2.3
