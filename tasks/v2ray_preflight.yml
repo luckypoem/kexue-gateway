@@ -21,7 +21,7 @@
 
 - name: Add the default settings into outbounds
   set_fact:
-    v2ray_processed_outbounds: "{{ v2ray_processed_outbounds | combine(outbound, recursive=true) }}"
+    v2ray_processed_outbounds: "{{ outbound | combine(v2ray_processed_outbounds, recursive=true) }}"
   vars:
     outbound: "{ '{{ item.key }}': {{ v2ray_outbound_defaults }} }"
   with_dict: "{{ v2ray_processed_outbounds }}"
