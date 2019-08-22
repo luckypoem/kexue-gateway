@@ -61,6 +61,9 @@ dhcp_range: 192.168.0.50,192.168.0.150,255.255.255.0,1h
 dhcp_options:
   - "dns-server,{{ ansible_default_ipv4.address }}"
 
+# DNSMASQ 缓存数量。一般无需修改。
+dnsmasq_cache_size: 10000
+
 # DNSMASQ 上游 DNS 服务器。一般无需修改。
 dnsmasq_upstreams:
   - 127.0.0.1#5353

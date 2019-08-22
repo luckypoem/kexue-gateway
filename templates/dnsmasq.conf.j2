@@ -568,7 +568,7 @@ dhcp-option=option:{{ option }}
 
 # Set the cachesize here.
 #cache-size=150
-cache-size=10000
+cache-size={{ dnsmasq_cache_size }}
 
 # If you want to disable negative caching, uncomment this.
 #no-negcache
