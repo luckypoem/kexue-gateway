@@ -2,25 +2,25 @@
 
 {{ ansible_managed | comment }}
 
-set -xeuo pipefail
+set -x
 
 extract_latest_url() {
     [[ $GITHUB_TOKEN != "" ]] && auth="Authorization: token $GITHUB_TOKEN" || auth=""
-	curl -fsS -H "$auth" "https://api.github.com/repos/$1/releases/latest" \
-		| grep browser_download_url \
-		| cut -d '"' -f 4
+    curl -fsS -H "$auth" "https://api.github.com/repos/$1/releases/latest" \
+        | grep browser_download_url \
+        | cut -d '"' -f 4
 }
 
 download_file() {
-	temp=$(mktemp)
-	curl -fsSL -o "$temp" "$1"
-	cp -f "$temp" "$2"
+    temp=$(mktemp)
+    curl -fL -o "$temp" "$1"
+    cp -f "$temp" "$2"
     rm "$temp"
 }
 
 download_latest_release() {
-	url=$(extract_latest_url "$1")
-	download_file "$url" "$2"
+    url=$(extract_latest_url "$1")
+    [ -z "$url" ] || download_file "$url" "$2"
 }
 
 download_latest_release "v2ray/domain-list-community" "/usr/local/v2ray/geosite.dat"
