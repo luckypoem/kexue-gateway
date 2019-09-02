@@ -13,7 +13,7 @@ preflight() {
 }
 
 main() {
-    BASENAME=$(basename $0)
+    BASENAME=$(basename "$0")
     INVENTORY=inventory
 
     if [[ "$1" == "" ]]; then
@@ -48,4 +48,4 @@ main() {
 }
 
 preflight
-main $@
+main "$@"
