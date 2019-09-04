@@ -1,4 +1,4 @@
-- name: Let's across the wall
+- name: Let's cross the wall
   debug:
     msg: |
       To have a quick look, use the following commands in your terminal:
