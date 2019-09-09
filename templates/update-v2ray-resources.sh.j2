@@ -4,26 +4,20 @@
 
 set -x
 
-extract_latest_url() {
-    [[ $GITHUB_TOKEN != "" ]] && local auth="Authorization: token $GITHUB_TOKEN" || local auth=""
-    curl -fsS -H "$auth" "https://api.github.com/repos/$1/releases/latest" \
-        | grep browser_download_url \
-        | cut -d '"' -f 4
-}
+export http_proxy=http://127.0.0.1:{{ http_proxy_port }} \
+       https_proxy=http://127.0.0.1:{{ http_proxy_port }}
 
 download_file() {
     local temp=$(mktemp)
-    curl -fL -o "$temp" "$1"
+    curl -fL --retry 3 -o "$temp" "$1"
     cp -f "$temp" "$2"
     rm "$temp"
 }
 
-download_latest_release() {
-    local url=$(extract_latest_url "$1")
-    [ -z "$url" ] || download_file "$url" "$2"
-}
+download_file "https://gitlab.com/wi1dcard/v2ray-resources/-/jobs/artifacts/master/raw/publish/geoip.dat?job=geoip" \
+    "/usr/local/v2ray/geoip.dat"
 
-download_latest_release "v2ray/domain-list-community" "/usr/local/v2ray/geosite.dat"
-download_latest_release "v2ray/geoip" "/usr/local/v2ray/geoip.dat"
+download_file "https://gitlab.com/wi1dcard/v2ray-resources/-/jobs/artifacts/master/raw/publish/geosite.dat?job=geosite" \
+    "/usr/local/v2ray/geosite.dat"
 
 echo "Resources has been updated."

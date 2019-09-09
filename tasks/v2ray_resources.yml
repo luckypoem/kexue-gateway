@@ -8,4 +8,4 @@
   cron:
     name: update-v2ray-resources
     job: *update_v2ray_resources
-    special_time: weekly
+    special_time: daily
