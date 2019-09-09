@@ -35,6 +35,7 @@ so_mark_direct: 255
 so_mark_forward: 254
 # 特殊 IP 地址（段）。完整列表请参见 RFC5735。
 # 目标 IP 属于这些 IP 段的流量将不会进入 V2ray，而是直接由 iptables RETURN。
+ignored_addresses: []
 special_addresses:
   - 0.0.0.0/8
   - 10.0.0.0/8

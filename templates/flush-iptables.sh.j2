@@ -21,7 +21,7 @@ iptables -t mangle -A V2RAY -m mark --mark {{ so_mark_direct }} -j RETURN
 iptables -t mangle -A V2RAY -m mark --mark {{ so_mark_forward }} -j RETURN
 
 # See Wikipedia and RFC5735 for full list of reserved networks.
-{% for addr in special_addresses %}
+{% for addr in special_addresses + ignored_addresses %}
 iptables -t nat -A V2RAY -d {{ addr }} -j RETURN
 iptables -t mangle -A V2RAY -d {{ addr }} -j RETURN
 {% endfor %}
