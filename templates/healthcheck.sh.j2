@@ -8,5 +8,5 @@ else
     uri='/fail'
 fi
 
-curl -v -4fsS -m 5 --retry 3 -X POST -H "Content-Type: text/plain" -d "$result" \
+curl -4fsSv --max-time 5 --retry 3 -X POST -H "Content-Type: text/plain" -d "$result" \
     "http://hc-ping.com/{{ healthchecks_uuid }}$uri"
