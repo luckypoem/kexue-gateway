@@ -14,12 +14,15 @@ preflight() {
 
 main() {
     BASENAME=$(basename "$0")
+    DIRNAME=$(dirname "$0")
     INVENTORY=inventory
 
     if [[ "$1" == "" ]]; then
         echo "Usage: $BASENAME <variable_file> [-|<options_to_ansible>]"
         exit 2
     fi
+
+    # "$DIRNAME/initialize.sh"
 
     if [[ ! -f "$INVENTORY" ]]; then
         while [[ "$IP" == "" ]]; do
