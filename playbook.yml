@@ -13,7 +13,6 @@
     - import_tasks: tasks/v2ray_configure.yml
     - import_tasks: tasks/iptables.yml
     - import_tasks: tasks/dnsmasq.yml
-    - import_tasks: tasks/healthcheck.yml
     - import_tasks: tasks/landing.yml
 
   handlers:

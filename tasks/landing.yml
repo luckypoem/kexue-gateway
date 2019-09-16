@@ -1,3 +1,14 @@
+- name: Add health checking to crontab
+  vars:
+    curl_options: "-4fsSv --max-time 5 --retry 3"
+    curl_proxy: "--proxy http://127.0.0.1:{{ http_proxy_port }}"
+    curl_url: "'http://hc-ping.com/{{ healthchecks_uuid }}'"
+  cron:
+    name: healthcheck
+    job: "curl {{ curl_options }} {{ curl_proxy }} {{ curl_url }} | logger -t healthcheck"
+    minute: "*"
+    disabled: "{{ healthchecks_uuid == '' }}"
+
 - name: Let's cross the wall
   debug:
     msg: |
