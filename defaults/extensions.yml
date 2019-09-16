@@ -9,14 +9,3 @@ healthchecks_uuid: ""
 healthcheck_commands:
   - 'echo "System uptime: $(uptime)"'
   - 'curl -4fsSv --max-time 5 --retry 3 -o /dev/null -w "\nRemote IP: %{remote_ip}\nResponse time: %{time_total}s\n" http://www.google.com/'
-
-# --------------
-#   frpc 配置
-# --------------
-
-# frpc 安装版本。例如 "0.27.0"，若为空则不安装 frpc。
-frpc_version: ""
-# frpc 使用的 OS 和 Architecture。
-frpc_os_arch: linux_arm64
-# frpc 配置文件路径。其内容支持 Jinja2 模板语法。
-frpc_config_file: vars/frpc.ini.j2
