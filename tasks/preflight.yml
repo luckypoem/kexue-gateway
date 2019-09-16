@@ -13,23 +13,6 @@
   notify:
     - restart cron
 
-- name: Obtain the connection name by nmcli
-  shell: nmcli -t -m tabular -f GENERAL.CONNECTION dev show eth0
-  register: nmcli_connection_name
-  when: ensure_static_ip | bool
-
-- name: Configure static ip address
-  shell: |
-    nmcli conn modify "{{ nmcli_connection_name.stdout }}" \
-      ipv4.method manual \
-      ipv4.addresses "{{ ansible_default_ipv4.address ~ "/" ~ prefix }}" \
-      ipv4.gateway "{{ local_gateway_ip if local_gateway_ip else ansible_default_ipv4.gateway }}" \
-      ipv4.dns "{{ local_dns_server }}" && \
-    nmcli conn up "{{ nmcli_connection_name.stdout }}"
-  vars:
-    prefix: "{{ (ansible_default_ipv4.network ~ '/' ~ ansible_default_ipv4.netmask) | ipaddr('prefix') }}"
-  when: ensure_static_ip | bool
-
 - name: Enable ipv4 forwarding
   sysctl:
     name: net.ipv4.ip_forward
