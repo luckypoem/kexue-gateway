@@ -5,19 +5,19 @@
 # 网关主机名（Hostname）。若为空则不设置主机名，即维持默认。
 kexue_hostname: ""
 # V2ray 服务进程的最大「可打开文件描述符数量」限制。
-max_open_files: 2048
+max_open_files: 10240
 # 是否完全禁用 IPv6。
 disable_all_ipv6: true
 # systemd-resolved 服务配置。可选项 stopped 或 direct。
-systemd_resolved: stopped
+systemd_resolved: direct
 
 # ------------------
 # 以下为 IPTables 配置
 # ------------------
 
-# 是否转发本地流量。启用后，网关自身的流量将与其它客户端流量享有同样的转发规则。
+# 是否转发本机流量。启用后，网关自身的流量将与其它客户端流量享有同样的转发规则。
 local_traffic: true
-# 是否重定向非本机 UDP 流量。暂时不兼容 Armbian。
+# 是否转发非本机 UDP 流量。请谨慎启用。
 udp_enabled: false
 # 是否开启 DNS 劫持。开启后，DNS 查询请求（目标端口为 53 的 UDP 流量）将会被强制重定向至网关的 DNS 服务。
 # 可在客户端无法修改 DNS 服务器时使用（例如 Chromecast）。
@@ -76,8 +76,8 @@ dnsmasq_china_excludes:
 # 以下为 V2ray 配置，详情可参考 V2ray 官方文档
 # ---------------------------------------
 
-# V2ray 发行包路径。可在 https://github.com/v2ray/v2ray-core/releases 下载。
-v2ray_archive: dist/v2ray-linux-arm64.zip
+# V2ray 发行包路径。
+v2ray_archive: dist/v2ray-linux-64.zip
 # V2ray 安装路径。
 v2ray_install_path: /usr/local/v2ray
 
@@ -97,7 +97,7 @@ sniffing_enabled: true
 # 域名路由策略。若为 IPOnDemand，会将域名通过内置的 DNS 解析为 IP 后，参与包含 IP 条件的路由规则匹配。
 domain_strategy: IPOnDemand
 # 空闲连接超时时间（单位：秒）。若某 TCP 连接在该时间内未传输任何数据（包括上行和下行），则中断该连接。
-idle_connections_timeout: 300
+idle_connections_timeout: 3600
 # 是否开启 TCP Fast Open。
 tcp_fast_open: true
 
@@ -107,3 +107,10 @@ log_access: /dev/null
 log_error: /var/log/v2ray.log
 # 日志等级。可选值请参考 V2ray 文档。
 log_level: warning
+
+# --------------------------------------
+#   健康检查配置，依赖于 healthchecks.io
+# --------------------------------------
+
+# healthchecks.io 提供的 UUID。当不为空字符串时，将会启用健康检查上报。
+healthchecks_uuid: ""

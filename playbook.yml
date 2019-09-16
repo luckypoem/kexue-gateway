@@ -2,7 +2,6 @@
   vars_files:
     - defaults/basic.yml
     - defaults/advanced.yml
-    - defaults/extensions.yml
     - defaults/raw.yml
 
   tasks:
