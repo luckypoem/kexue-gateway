@@ -3,9 +3,13 @@
 {{ ansible_managed | comment }}
 
 export PATH=$PATH:/sbin
+ip_rule="fwmark 1 lookup 100"
+ip_route="local default dev lo table 100"
 
 # Remove current rules
 iptables-save -c | grep -v "V2RAY" | iptables-restore -c
+ip rule del $ip_rule 2>/dev/null
+ip route del $ip_route 2>/dev/null
 
 set -xeuo pipefail
 
@@ -37,6 +41,8 @@ iptables -t nat -A V2RAY -p udp -j RETURN
 # Anything else should be redirected to Dokodemo-door's local port
 iptables -t nat -A V2RAY -p tcp -j REDIRECT --to-ports 12345
 {% if udp_enabled %}
+ip rule add $ip_rule
+ip route add $ip_route
 iptables -t mangle -A V2RAY -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
 {% endif %}
 
