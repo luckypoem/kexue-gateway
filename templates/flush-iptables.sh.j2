@@ -4,9 +4,13 @@
 
 set -x
 export PATH=$PATH:/sbin
+ip_rule="fwmark 1 lookup 100"
+ip_route="local default dev lo table 100"
 
 # Remove current rules
 iptables-save -c | grep -v "V2RAY" | iptables-restore -c
+ip rule del $ip_rule 2>/dev/null
+ip route del $ip_route 2>/dev/null
 for ipset_name in $(ipset -n list | grep "{{ domain_based_routing_id_prefix }}"); do
     ipset destroy "$ipset_name" 2>/dev/null
 done
@@ -49,6 +53,8 @@ $ipta mangle -m set --match-set {{ route.ipset_name }} dst -p udp -j TPROXY --on
 # Anything else should be redirected to Dokodemo-door's local port
 $ipta nat -p tcp -j REDIRECT --to-ports "{{ tproxy_port }}"
 {% if udp_enabled %}
+ip rule add $ip_rule
+ip route add $ip_route
 $ipta mangle -p udp -j TPROXY --on-port "{{ tproxy_port }}" --tproxy-mark 0x01/0x01
 {% endif %}
 
