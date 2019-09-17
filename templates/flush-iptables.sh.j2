@@ -2,42 +2,54 @@
 
 {{ ansible_managed | comment }}
 
+set -x
 export PATH=$PATH:/sbin
 
 # Remove current rules
 iptables-save -c | grep -v "V2RAY" | iptables-restore -c
+for ipset_name in $(ipset -n list | grep "{{ domain_based_routing_id_prefix }}"); do
+    ipset destroy "$ipset_name" 2>/dev/null
+done
 
-set -xeuo pipefail
+set -euo pipefail
 
 # Create new chain
-iptables -t nat -N V2RAY
-iptables -t mangle -N V2RAY
+export ipta="iptables -A V2RAY -t" # <TABLE> ...
+iptables -N V2RAY -t nat
+iptables -N V2RAY -t mangle
 
 # Ignore V2Ray outbound traffic
-iptables -t nat -A V2RAY -m mark --mark {{ so_mark_direct }} -j RETURN
-iptables -t nat -A V2RAY -m mark --mark {{ so_mark_forward }} -j RETURN
+$ipta nat -m mark --mark "{{ so_mark_direct }}" -j RETURN
+$ipta nat -m mark --mark "{{ so_mark_forward }}" -j RETURN
+$ipta mangle -m mark --mark "{{ so_mark_direct }}" -j RETURN
+$ipta mangle -m mark --mark "{{ so_mark_forward }}" -j RETURN
 
-iptables -t mangle -A V2RAY -m mark --mark {{ so_mark_direct }} -j RETURN
-iptables -t mangle -A V2RAY -m mark --mark {{ so_mark_forward }} -j RETURN
-
-# See Wikipedia and RFC5735 for full list of reserved networks.
 {% for addr in special_addresses + ignored_addresses %}
-iptables -t nat -A V2RAY -d {{ addr }} -j RETURN
-iptables -t mangle -A V2RAY -d {{ addr }} -j RETURN
+$ipta nat -d "{{ addr }}" -j RETURN
+$ipta mangle -d "{{ addr }}" -j RETURN
 {% endfor %}
 
 # Redirect port 53 to local dnsmasq.
 {% if dns_hijacking %}
-iptables -t nat -A V2RAY --dport 53 -j REDIRECT --to-ports 53
+$ipta nat --dport 53 -j REDIRECT --to-ports 53
 {% endif %}
 
 # Don't redirect UDP traffic in NAT table.
-iptables -t nat -A V2RAY -p udp -j RETURN
+$ipta nat -p udp -j RETURN
+
+# Domain-based routing
+{% for route in (domain_based_routes if domain_based_routing_enabled else []) %}
+ipset create {{ route.ipset_name }} hash:ip hashsize 64
+$ipta nat -m set --match-set {{ route.ipset_name }} dst -p tcp -j REDIRECT --to-ports "{{ route.inbound_port }}"
+{% if udp_enabled %}
+$ipta mangle -m set --match-set {{ route.ipset_name }} dst -p udp -j TPROXY --on-port "{{ route.inbound_port }}" --tproxy-mark 0x01/0x01
+{% endif %}
+{% endfor %}
 
 # Anything else should be redirected to Dokodemo-door's local port
-iptables -t nat -A V2RAY -p tcp -j REDIRECT --to-ports 12345
+$ipta nat -p tcp -j REDIRECT --to-ports "{{ tproxy_port }}"
 {% if udp_enabled %}
-iptables -t mangle -A V2RAY -p udp -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
+$ipta mangle -p udp -j TPROXY --on-port "{{ tproxy_port }}" --tproxy-mark 0x01/0x01
 {% endif %}
 
 # Apply the rules

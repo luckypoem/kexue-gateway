@@ -6,6 +6,8 @@
 
   tasks:
     - import_tasks: tasks/preflight.yml
+    - import_tasks: tasks/domain_based_routing.yml
+      when: domain_based_routing_enabled
     - import_tasks: tasks/v2ray_preflight.yml
     - import_tasks: tasks/v2ray_install.yml
     - import_tasks: tasks/v2ray_resources.yml

@@ -57,6 +57,8 @@ dhcp_options:
 
 # DNSMASQ 缓存数量。一般无需修改。
 dnsmasq_cache_size: 10000
+# DNSMASQ 响应客户端的最大 TTL。一般无需修改。
+dnsmasq_max_ttl: 0
 
 # DNSMASQ 上游 DNS 服务器。一般无需修改。
 dnsmasq_upstreams:
@@ -81,6 +83,8 @@ v2ray_archive: dist/v2ray-linux-64.zip
 # V2ray 安装路径。
 v2ray_install_path: /usr/local/v2ray
 
+# 透明代理监听端口。一般无需修改。
+tproxy_port: 12345
 # SOCKS 代理端口。该端口提供的代理服务与其它流量享有同样的转发规则。
 socks_proxy_port: 1080
 # HTTP 代理端口。该端口提供的代理服务与其它流量享有同样的转发规则。
@@ -115,3 +119,14 @@ log_level: warning
 
 # healthchecks.io 提供的 UUID。当不为空字符串时，将会启用健康检查上报。
 healthchecks_uuid: ""
+
+# ---------------
+#   域名路由配置
+# ---------------
+
+domain_based_routing_enabled: false
+domain_based_routing_id_prefix: V2RAY-DBR-
+domain_based_routing_rules:
+  - id: example
+    route: [ type: field, outboundTag: example ]
+    hosts: [ example.com ]

@@ -52,10 +52,10 @@ TODO
 
 ### Ubuntu Server
 
-0. 安装 `unzip`。
+0. 安装依赖。
 
 ```bash
-$ sudo apt install unzip
+$ sudo apt install unzip ipset
 ```
 
 1. 使用 [Netplan](https://netplan.io/) 配置静态 IP 地址，以及上游网关；例如：

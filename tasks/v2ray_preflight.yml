@@ -1,11 +1,11 @@
 - name: Make a copy of the inbounds variable
   set_fact:
-    v2ray_processed_inbounds: []
+    v2ray_processed_inbounds: "{{ [ v2ray_inbound_dns ] + (v2ray_inbound_domains if domain_based_routing_enabled else []) }}" # Raw inbounds without default values.
 
 - name: Add the default settings into inbounds
   set_fact:
     v2ray_processed_inbounds: "{{ v2ray_processed_inbounds + [ item | combine(v2ray_inbound_defaults, recursive=true) ] }}"
-  loop: "{{ v2ray_inbounds }}"
+  loop: "{{ [ v2ray_inbound_tproxy ] + v2ray_inbounds }}"
 
 - name: Make a copy of the outbounds variable
   set_fact:
@@ -25,3 +25,7 @@
   vars:
     outbound: "{ '{{ item.key }}': {{ v2ray_outbound_defaults }} }"
   with_dict: "{{ v2ray_processed_outbounds }}"
+
+- name: Make a copy of the routes variable
+  set_fact:
+    v2ray_processed_routes: "{{ v2ray_routes + (v2ray_routes_domains if domain_based_routing_enabled else []) + v2ray_routes_final }}"

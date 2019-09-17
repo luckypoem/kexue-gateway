@@ -7,19 +7,7 @@
         "error": "{{ log_error }}",
         "loglevel": "{{ log_level }}"
     },
-    "inbounds": [
-        {
-            "port": 5353,
-            "tag": "dns",
-            "protocol": "dokodemo-door",
-            "settings": {
-                "address": "{{ dns_upstream }}",
-                "port": 53,
-                "network": "udp"
-            }
-        },
-        {{ v2ray_processed_inbounds | map('to_json') | join(',') }}
-    ],
+    "inbounds": {{ v2ray_processed_inbounds | to_json }},
     "dns": {
         "servers": [
             "localhost"
@@ -36,7 +24,7 @@
     ],
     "routing": {
         "domainStrategy": "{{ domain_strategy }}",
-        "rules": {{ (v2ray_routes + v2ray_final_routes) | to_json }}
+        "rules": {{ v2ray_processed_routes | to_json }}
     },
     "api": {
         "tag": "api",

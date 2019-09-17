@@ -88,6 +88,9 @@ server={{ server }}
 # Add the IPs of all queries to yahoo.com, google.com, and their
 # subdomains to the vpn and search ipsets:
 #ipset=/yahoo.com/google.com/vpn,search
+{% for route in (domain_based_routes if domain_based_routing_enabled else []) %}
+ipset={% for host in route.hosts %}/{{ host }}{% endfor %}/{{ route.ipset_name }}
+{% endfor %}
 
 # You can control how dnsmasq talks to a server: this forces
 # queries to 10.1.2.3 to be routed via eth1
@@ -579,6 +582,7 @@ cache-size={{ dnsmasq_cache_size }}
 # server for potentially stale date, you can set a time-to-live (in
 # seconds) here.
 #local-ttl=
+max-ttl={{ dnsmasq_max_ttl }}
 
 # If you want dnsmasq to detect attempts by Verisign to send queries
 # to unregistered .com and .net hosts to its sitefinder service and

@@ -3,17 +3,27 @@ v2ray_inbound_defaults:
     enabled: "{{ sniffing_enabled }}"
     destOverride: [http, tls]
 
-v2ray_inbounds:
-  - port: 12345
-    tag: tproxy
-    protocol: dokodemo-door
-    settings:
-      followRedirect: true
-      network: tcp,udp
-    streamSettings:
-      sockopt:
-        tproxy: redirect
+v2ray_inbound_dns:
+  port: 5353
+  tag: dns
+  protocol: dokodemo-door
+  settings:
+    address: "{{ dns_upstream }}"
+    port: 53
+    network: udp
 
+v2ray_inbound_tproxy:
+  port: "{{ tproxy_port }}"
+  tag: tproxy
+  protocol: dokodemo-door
+  settings:
+    followRedirect: true
+    network: tcp,udp
+  streamSettings:
+    sockopt:
+      tproxy: redirect
+
+v2ray_inbounds:
   - port: "{{ socks_proxy_port }}"
     tag: socks-proxy
     protocol: socks
@@ -89,7 +99,7 @@ v2ray_routes:
     outboundTag: "{{ v2ray_direct_outbound }}"
     ip: ["geoip:cn"]
 
-v2ray_final_routes:
+v2ray_routes_final:
   - type: field
     outboundTag: "{{ v2ray_direct_outbound }}"
     protocol: bittorrent

@@ -1,0 +1,19 @@
+- name: Generate domain-based routing inbounds
+  set_fact:
+    domain_based_routes: "{{ (domain_based_routes if domain_based_routes is defined else []) + [ item_defaults | combine(item) ] }}"
+    v2ray_inbound_domains: "{{ (v2ray_inbound_domains if v2ray_inbound_domains is defined else []) + [ v2ray_inbound_tproxy | combine(inbound_overrides) ] }}"
+    v2ray_routes_domains: "{{ (v2ray_routes_domains if v2ray_routes_domains is defined else []) + [ item.route | combine(route_overrides) ] }}"
+  vars:
+    port: "{{ tproxy_port + 1 + index }}"
+    id: "{{ domain_based_routing_id_prefix }}{{ item.id }}"
+    item_defaults:
+      inbound_port: "{{ port }}"
+      ipset_name: "{{ id }}"
+    inbound_overrides:
+      port: "{{ port }}"
+      tag: "{{ id }}"
+    route_overrides:
+      inboundTag: "{{ id }}"
+  loop: "{{ domain_based_routing_rules }}"
+  loop_control:
+    index_var: index
