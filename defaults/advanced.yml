@@ -81,21 +81,22 @@ v2ray_archive: dist/v2ray-linux-64.zip
 # V2ray 安装路径。
 v2ray_install_path: /usr/local/v2ray
 
-# DNS 流量代理服务器。若为空则不通过代理服务器发送 DNS 查询请求。
-dns_forward_outbound: ""
 # SOCKS 代理端口。该端口提供的代理服务与其它流量享有同样的转发规则。
 socks_proxy_port: 1080
 # HTTP 代理端口。该端口提供的代理服务与其它流量享有同样的转发规则。
 http_proxy_port: 8080
 
-# 多路复用数量。可指定单条 TCP 连接实际承载的连接数，若等于 0，则关闭多路复用。
-mux_concurrency: 0
+# DNS 流量代理服务器。若为空则不通过代理服务器发送 DNS 查询请求。
+dns_forward_outbound: ""
 # DNS 上游服务器。
 dns_upstream: 1.1.1.1
 # 是否开启嗅探。当启用时，将监测 HTTP 和 TLS（HTTPS）流量的目标域名，可用于路由规则匹配。
 sniffing_enabled: true
 # 域名路由策略。若为 IPOnDemand，会将域名通过内置的 DNS 解析为 IP 后，参与包含 IP 条件的路由规则匹配。
 domain_strategy: IPOnDemand
+
+# 多路复用数量。可指定单条 TCP 连接实际承载的连接数，若等于 0，则关闭多路复用。
+mux_concurrency: 0
 # 空闲连接超时时间（单位：秒）。若某 TCP 连接在该时间内未传输任何数据（包括上行和下行），则中断该连接。
 idle_connections_timeout: 3600
 # 是否开启 TCP Fast Open。
