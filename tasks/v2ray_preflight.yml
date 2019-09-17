@@ -1,6 +1,7 @@
 - name: Make a copy of the inbounds variable
   set_fact:
-    v2ray_processed_inbounds: "{{ [ v2ray_inbound_dns ] + (v2ray_inbound_domains if domain_based_routing_enabled else []) }}" # Raw inbounds without default values.
+    # Raw inbounds without default values.
+    v2ray_processed_inbounds: "{{ [ v2ray_inbound_dns ] + (v2ray_inbound_domains if domain_based_routing_enabled else []) }}"
 
 - name: Add the default settings into inbounds
   set_fact:
