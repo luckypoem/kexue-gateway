@@ -1,0 +1,18 @@
+- name: Extract servers from v2ray outbounds
+  set_fact:
+    v2ray_outbound_servers: "{{ vnext }}"
+  vars:
+    default: []
+    servers: "{{ item.value.settings.servers if item.value.settings.servers is defined else default }}"
+    vnext: "{{ item.value.settings.vnext if item.value.settings.vnext is defined else servers }}"
+
+- name: Collect non-ip addresses into a variable
+  set_fact:
+    dnsmasq_china_appends: "{{ dnsmasq_china_appends + [ server.address ] }}"
+  when: not_an_ip
+  changed_when: not_an_ip
+  vars:
+    not_an_ip: "{{ not (server.address | ipaddr | bool) }}"
+  loop: "{{ v2ray_outbound_servers }}"
+  loop_control:
+    loop_var: server

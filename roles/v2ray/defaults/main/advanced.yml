@@ -70,9 +70,11 @@ dnsmasq_china_upstreams:
   - 114.114.115.115
   - 180.76.76.76
 
+# 需追加到国内域名列表的域名。
+dnsmasq_china_appends: []
+
 # 需从国内域名列表内排除的域名。
-dnsmasq_china_excludes:
-  # - alibabacloud.com
+dnsmasq_china_excludes: []
 
 # ---------------------------------------
 # 以下为 V2ray 配置，详情可参考 V2ray 官方文档

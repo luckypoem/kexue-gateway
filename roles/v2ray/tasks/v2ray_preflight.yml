@@ -8,6 +8,10 @@
     v2ray_processed_inbounds: "{{ v2ray_processed_inbounds + [ item | combine(v2ray_inbound_defaults, recursive=true) ] }}"
   loop: "{{ [ v2ray_inbound_tproxy ] + v2ray_inbounds }}"
 
+- name: Gather domain-style server addresses for dnsmasq
+  include_tasks: v2ray_preflight_dnsmasq.yml
+  with_dict: "{{ v2ray_outbounds }}"
+
 - name: Make a copy of the outbounds variable
   set_fact:
     v2ray_processed_outbounds: "{{ v2ray_outbounds }}"

@@ -39,6 +39,10 @@ for _server in "${SERVERS[@]}"; do
     {% for host in (dnsmasq_china_excludes if dnsmasq_china_excludes else []) %}
     sed -i "s|^server.*/{{ host }}/.*$|# Removed {{ host }}|" "$_path"
     {% endfor %}
+
+    {% for host in (dnsmasq_china_appends if dnsmasq_china_appends else []) %}
+    echo "server=/{{ host }}/$_server" >> "$_path"
+    {% endfor %}
   done
 done
 
