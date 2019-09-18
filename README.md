@@ -7,7 +7,6 @@
 
 - [科学网关](#%e7%a7%91%e5%ad%a6%e7%bd%91%e5%85%b3)
   - [变更记录](#%e5%8f%98%e6%9b%b4%e8%ae%b0%e5%bd%95)
-  - [目录结构](#%e7%9b%ae%e5%bd%95%e7%bb%93%e6%9e%84)
   - [如何安装](#%e5%a6%82%e4%bd%95%e5%ae%89%e8%a3%85)
     - [电脑](#%e7%94%b5%e8%84%91)
     - [Ubuntu Server](#ubuntu-server)
@@ -21,42 +20,20 @@
 
 TODO
 
-## 目录结构
-
-```
-.
-├── defaults         --- 默认配置目录
-│   └── ...
-├── files            --- 普通文件目录
-│   └── ...
-├── tasks            --- Ansible Tasks
-│   └── ...
-├── templates        --- 模板文件目录
-│   └── ...
-├── vars             --- 自定义配置目录
-│   └── ...
-├── README.md        --- 本文件
-├── apply.sh         --- 辅助部署脚本
-└── playbook.yml     --- Ansible Playbook
-```
-
 ## 如何安装
 
 ### 电脑
 
-1. 安装 Git LFS（用于拉取 `dist/` 目录）。
-2. [安装 Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)（版本 >= 2.8）和 `python-netaddr`，例如通过 Python 的 pip 包管理器安装：
+1. [安装 Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)（版本 >= 2.8）和 `python-netaddr`，例如通过 Python 的 pip 包管理器安装：
     ```bash
     pip install ansible netaddr
     ```
+2. 执行 `initialize.sh`，用于下载发行包等：
+    ```
+    ./initialize.sh
+    ```
 
 ### Ubuntu Server
-
-0. 安装依赖。
-
-```bash
-$ sudo apt install unzip ipset
-```
 
 1. 使用 [Netplan](https://netplan.io/) 配置静态 IP 地址，以及上游网关；例如：
 
@@ -77,52 +54,25 @@ network:
 $ netplan try
 ```
 
-2. 修改本项目配置（`vars/main.yml`），调整以下内容：
-
-```yaml
-ensure_static_ip: false
-systemd_resolved: direct
-v2ray_archive: dist/v2ray-linux-64.zip
-frpc_os_arch: linux_amd64
-```
-
-3. 修改 `inventory` 文件内容：
-
-```
-<IP_OR_HOST> ansible_user=<USER_NAME> ansible_become=true ansible_become_pass=<SUDO_PASSWORD>
-```
-
-注意：`<USER_NAME>` 通常不为 `root`，请按需调整。
+TODO
 
 ### 开始使用
 
-以下路径均相对于本项目根目录，请在本地执行命令。
-
-1. 完整克隆或下载本项目。
-2. 将 `defaults/basic.yml` 复制到 `vars/main.yml`，根据服务器信息替换其中的配置。
-3. 执行以下命令，并根据提示输入指定信息：
-   ```bash
-   ./apply.sh vars/main.yml
-   ```
-   运行完成后，可根据提示的命令测试代理是否正常运行。
-4. 登录路由器管理页面，修改 LAN 口的 DHCP 服务配置 —— 将客户端网关和 DNS 服务器均设置为 NanoPi 的 IP 地址即可。
+TODO
 
 ## 进阶配置
 
 - 建议先阅读 GitHub [Wiki](https://github.com/wi1dcard/kexue-gateway/wiki)。
-- 可参考 `defaults/` 目录内其它配置文件的注释，调整更多配置项。
-- 也可以通过修改 `templates/config.json.j2` 来自定义由 Jinja2 渲染的 V2ray 配置文件。
+- 可参考 [roles/v2ray/defaults/main/](roles/v2ray/defaults/main/) 目录内其它配置文件的注释，调整更多配置项。
+- 甚至可以通过修改 [roles/v2ray/templates/config.json.j2](roles/v2ray/templates/config.json.j2) 来自定义由 Jinja2 渲染的 V2ray 配置文件。
 
 ## 已知事项
 
 - 不支持 IPv6；原因：普及率低。
-- 不支持 UDP Relay；原因：配置不当易引发副作用，例如延迟升高等。
 
 ## 感谢
 
 - V2ray
-- CoreDNS
-- ... TODO
 
 ## 声明
 
