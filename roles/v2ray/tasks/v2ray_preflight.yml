@@ -1,12 +1,12 @@
 - name: Make a copy of the inbounds variable
   set_fact:
     # Raw inbounds without default values.
-    v2ray_processed_inbounds: "{{ [ v2ray_inbound_dns ] + (v2ray_inbound_domains if domain_based_routing_enabled else []) }}"
+    v2ray_processed_inbounds: "{{ [ v2ray_inbound_dns ] }}"
 
 - name: Add the default settings into inbounds
   set_fact:
     v2ray_processed_inbounds: "{{ v2ray_processed_inbounds + [ item | combine(v2ray_inbound_defaults, recursive=true) ] }}"
-  loop: "{{ [ v2ray_inbound_tproxy ] + v2ray_inbounds }}"
+  loop: "{{ [ v2ray_inbound_tproxy ] + (v2ray_inbound_domains if domain_based_routing_enabled else []) + v2ray_inbounds }}"
 
 - name: Gather domain-style server addresses for dnsmasq
   include_tasks: v2ray_preflight_dnsmasq.yml
