@@ -13,32 +13,18 @@
   notify:
     - restart cron
 
-- name: Enable ipv4 forwarding
-  sysctl:
-    name: net.ipv4.ip_forward
-    value: "1"
-    sysctl_set: true
-    state: present
-    reload: true
+- name: Replace APT repositories
+  copy:
+    src: files/apt-sources.list
+    dest: /etc/apt/sources.list
+    mode: 0644
+    backup: true
 
-- name: Disable all ipv6
-  sysctl:
-    name: net.ipv6.conf.all.disable_ipv6
-    value: "{{ 1 if disable_all_ipv6 else 0 }}"
-    sysctl_set: true
-    state: present
-    reload: true
-
-- name: Stop systemd-resolved
-  systemd:
-    name: systemd-resolved
-    state: stopped
-    enabled: false
-  when: systemd_resolved == 'stopped'
-
-- name: Set systemd-resolved mode
-  file:
-    src: /run/systemd/resolve/resolv.conf
-    dest: /etc/resolv.conf
-    state: link
-  when: systemd_resolved == 'direct'
+- name: Install requirements
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+  loop:
+    - unzip
+    - ipset
