@@ -7,9 +7,6 @@
 
 - [科学网关](#%e7%a7%91%e5%ad%a6%e7%bd%91%e5%85%b3)
   - [不兼容变更](#%e4%b8%8d%e5%85%bc%e5%ae%b9%e5%8f%98%e6%9b%b4)
-    - [[v3]](#v3)
-    - [[v2]](#v2)
-    - [[v1]](#v1)
   - [使用指南](#%e4%bd%bf%e7%94%a8%e6%8c%87%e5%8d%97)
     - [系统需求](#%e7%b3%bb%e7%bb%9f%e9%9c%80%e6%b1%82)
     - [准备工作](#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c)
@@ -22,30 +19,27 @@
 
 ## 不兼容变更
 
-**⚠️由于新版本仅支持 Ubuntu Server Bionic AMD64，请原有 NanoPi 用户使用 [release/v2][v2] 分支。**
+**⚠️由于新版本仅支持 Ubuntu Server Bionic AMD64，请原有 NanoPi 用户使用 [release/v2] 分支。**
 
-### [v3]
+- [release/v3]
+  - 废弃 NanoPi 等 ARM 设备支持。
+  - 目录结构重构，废弃辅助脚本 `apply.sh` 和内置 `playbook.yml`。
+  - 废弃 Git LFS 存储发行包（需用户自行下载）。
+  - 废弃安装 frpc。
+  - 废弃变量 `healthcheck_commands`。
+  - 变量 `local_traffic` 的默认值修改为 `false`。
 
-- 废弃 frpc。
-- 废弃变量 `healthcheck_commands`。
-- 废弃 NanoPi 等 ARM 设备支持。
-- 废弃 LFS 存储发行包（需用户自行下载）。
-- 目录结构重构，废弃辅助脚本 `apply.sh` 和内置 `playbook.yml`。
-- 变量 `local_traffic` 的默认值修改为 `false`。
+- [release/v2]
+  - 废弃基于规则的路由（`rules.yml`）。
+  - 废弃原有直连和全局 SOCKS 代理。
+  - 变量 `reversed_ips` 被重命名为 `special_addresses`。
 
-### [v2]
+- [release/v1]
+  - 初始版本。
 
-- 变量 `reversed_ips` 被重命名为 `special_addresses`。
-- 废弃原有直连和全局 SOCKS 代理。
-- 废弃基于规则的路由（`rules.yml`）。
-
-### [v1]
-
-- 初始版本。
-
-[v1]: https://github.com/wi1dcard/kexue-gateway/tree/release/v1
-[v2]: https://github.com/wi1dcard/kexue-gateway/tree/release/v2
-[v3]: https://github.com/wi1dcard/kexue-gateway/tree/release/v3
+[release/v1]: https://github.com/wi1dcard/kexue-gateway/tree/release/v1
+[release/v2]: https://github.com/wi1dcard/kexue-gateway/tree/release/v2
+[release/v3]: https://github.com/wi1dcard/kexue-gateway/tree/release/v3
 
 ## 使用指南
 
@@ -53,62 +47,58 @@
 
 - 一台装有 Ubuntu Server Bionic 的 AMD64 架构主机，可在淘宝搜索「软路由」相关商品。
 - 一台装有 Ansible（版本 >= 2.8）和 `python-netaddr` 的电脑。安装过程请参考 [官方文档](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)，例如通过 Python 的 pip 包管理器安装：
-    ```bash
-    pip install ansible netaddr
-    ```
+  ```bash
+  pip install ansible netaddr
+  ```
 
 ### 准备工作
 
 1. 克隆本项目后，在本地电脑执行 `initialize.sh` 用于下载发行包等：
-    ```
-    ./initialize.sh
-    ```
+  ```
+  ./initialize.sh
+  ```
 
 2. 在 Ubuntu Server 中使用 [Netplan](https://netplan.io/) 配置静态 IP 地址，以及上游网关等；例如（请根据实际情况填写）：
+  ```yaml
+  # /etc/netplan/50-cloud-init.yaml
+  network:
+    version: 2
+    ethernets:
+      # 网卡名为 ens160
+      ens160:
+        # 禁止通过 DHCP 获取 IP 地址信息
+        dhcp4: no
+        # IP 为 192.168.88.254；子网掩码为 255.255.255.0
+        addresses: [192.168.88.254/24]
+        # 网关（路由器）IP 为 192.168.88.1
+        gateway4: 192.168.88.1
+        # DNS 服务器为 114.114.114.114
+        nameservers:
+          addresses: [114.114.114.114]
+  ```
 
-```yaml
-# /etc/netplan/50-cloud-init.yaml
-network:
-  version: 2
-  ethernets:
-    # 网卡名为 ens160
-    ens160:
-      # 禁止通过 DHCP 获取 IP 地址信息
-      dhcp4: no
-      # IP 为 192.168.88.254；子网掩码为 255.255.255.0
-      addresses: [192.168.88.254/24]
-      # 网关（路由器）IP 为 192.168.88.1
-      gateway4: 192.168.88.1
-      # DNS 服务器为 114.114.114.114
-      nameservers:
-        addresses: [114.114.114.114]
-```
-
-随后执行以下命令应用配置：
-
-```bash
-$ netplan try
-```
+3. 应用 Netplan 配置：
+  ```bash
+  $ netplan try
+  ```
 
 ### 编写配置文件
 
 1. 请将 [roles/v2ray/defaults/main/basic.yml](roles/v2ray/defaults/main/basic.yml) 的内容复制到 `vars/basic.yml`，并按照实际情况填写服务器信息。
 
 2. 创建 `inventories/main.ini`，用于保存网关 SSH 信息，例如：
-
-```ini
-192.168.88.254 ansible_become=true ansible_user=<SSH_USER> ansible_become_pass=<SUDO_PASSWORD>
-```
+  ```ini
+  192.168.88.254 ansible_become=true ansible_user=<SSH_USER> ansible_become_pass=<SUDO_PASSWORD>
+  ```
 
 3. 创建 `playbook.yml`，例如：
-
-```yaml
-- hosts: all
-  vars_files:
-    - vars/basic.yml
-  roles:
-    - v2ray
-```
+  ```yaml
+  - hosts: all
+    vars_files:
+      - vars/basic.yml
+    roles:
+      - v2ray
+  ```
 
 ### 开始部署
 
